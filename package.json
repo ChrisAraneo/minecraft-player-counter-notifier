@@ -4,7 +4,11 @@
   "description": "Script that checks number of players on Minecraft server and notifies the admin",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint \"src/**/*.{ts,json}\" --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.spec.ts\" \"src/**/*.json\"",
+    "start": "npm run build && node dist/mpcn.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/mpcn.js"
   },
   "repository": {
     "type": "git",
@@ -18,5 +22,14 @@
   "bugs": {
     "url": "https://github.com/ChrisAraneo/minecraft-player-counter-notifier/issues"
   },
-  "homepage": "https://github.com/ChrisAraneo/minecraft-player-counter-notifier#readme"
+  "homepage": "https://github.com/ChrisAraneo/minecraft-player-counter-notifier#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "esbuild": "^0.19.9",
+    "eslint": "^8.55.0",
+    "eslint-plugin-jsonc": "^2.10.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3"
+  }
 }
