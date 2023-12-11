@@ -6,9 +6,10 @@
   "scripts": {
     "lint": "eslint \"src/**/*.{ts,json}\" --fix",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.spec.ts\" \"src/**/*.json\"",
-    "start": "npm run build && node dist/mpcn.js",
+    "start": "npm run build && npm run copy-config && node dist/mpcn.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/mpcn.js"
+    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/mpcn.js",
+    "copy-config": "node dev-scripts/copy-config-file.js"
   },
   "repository": {
     "type": "git",
