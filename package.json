@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/ChrisAraneo/minecraft-player-counter-notifier#readme",
   "devDependencies": {
+    "@types/node": "^20.10.4",
     "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "esbuild": "^0.19.9",
