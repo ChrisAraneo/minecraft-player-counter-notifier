@@ -25,9 +25,10 @@ import { EMPTY, catchError, firstValueFrom } from 'rxjs';
     );
 
     const apiClient = new MinecraftServerStatusApiClient();
-    (config.servers as string[]).forEach(async (server) => {
-        const numberOfPlayers = await apiClient.getNumberOfOnlinePlayers(server);
-
-        logger.info(`Server ${server} has currently: ${numberOfPlayers} players.`);
+    (config.servers as string[]).forEach((server) => {
+        apiClient.getPlayersList(server).subscribe((players) => {
+            logger.info(`Server ${server} has currently: ${players.length} players.`);
+            logger.info(`Players online: ${players.map((player) => player.name).join(', ')}`);
+        });
     });
 })();

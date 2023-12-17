@@ -1,34 +1,57 @@
 import fetch from 'node-fetch';
 import { StatusResponse } from './status-response.type';
+import { Cache } from './cache.type';
+import { Observable, from, map, of } from 'rxjs';
+import { Player } from './player.type';
 
 export class MinecraftServerStatusApiClient {
     private static readonly CacheTTL: number = 30000;
 
     private static StatusEndpoint = `https://api.mcsrvstat.us/3`;
-    private static Cache = new Map<string, { timestamp: Date; response: StatusResponse }>();
+    private static Cache = new Map<string, Cache>();
 
     constructor() {}
 
-    // TODO Use observables
-    async getNumberOfOnlinePlayers(server: string, now: Date = new Date()): Promise<number | void> {
-        const cached = MinecraftServerStatusApiClient.Cache.get(server);
+    getPlayersList(server: string, now: Date = new Date()): Observable<Player[]> {
+        const cached = this.getCache(server);
 
-        if (
-            cached?.timestamp &&
-            +cached.timestamp + MinecraftServerStatusApiClient.CacheTTL < +now
-        ) {
-            return cached.response.players.online;
+        if (this.isCacheOutdated(cached, now)) {
+            return from(
+                this.fetchServerStatus(server).then((response) => {
+                    this.updateCache(server, now, response);
+
+                    return response.players?.list || [];
+                }),
+            );
+        } else {
+            return of(cached?.response.players?.list || []);
         }
+    }
 
-        return await fetch(`${MinecraftServerStatusApiClient.StatusEndpoint}/${server}`)
-            .then((response) => response.json() as unknown as StatusResponse)
-            .then((json: StatusResponse) => {
-                MinecraftServerStatusApiClient.Cache.set(server, {
-                    timestamp: now,
-                    response: json,
-                });
+    getNumberOfOnlinePlayers(server: string, now: Date = new Date()): Observable<number> {
+        return this.getPlayersList(server, now).pipe(map((players) => players.length));
+    }
 
-                return json.players.online;
-            });
+    private async fetchServerStatus(server: string): Promise<StatusResponse> {
+        return fetch(`${MinecraftServerStatusApiClient.StatusEndpoint}/${server}`).then(
+            (response) => response.json() as unknown as StatusResponse,
+        );
+    }
+
+    private getCache(server: string) {
+        return MinecraftServerStatusApiClient.Cache.get(server);
+    }
+
+    private isCacheOutdated(cached: Cache | undefined, now: Date): boolean {
+        return !(
+            cached?.timestamp && +cached.timestamp + MinecraftServerStatusApiClient.CacheTTL < +now
+        );
+    }
+
+    private updateCache(server: string, timestamp: Date, response: StatusResponse): void {
+        MinecraftServerStatusApiClient.Cache.set(server, {
+            timestamp: timestamp,
+            response: response,
+        });
     }
 }
