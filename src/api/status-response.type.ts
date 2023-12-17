@@ -1,3 +1,5 @@
+import { Player } from "./player.type";
+
 export type StatusResponse = {
     ip: string;
     port: number;
@@ -26,6 +28,7 @@ export type StatusResponse = {
     players: {
         online: number;
         max: number;
+        list?: Player[]
     };
     version: string;
     online: boolean;
