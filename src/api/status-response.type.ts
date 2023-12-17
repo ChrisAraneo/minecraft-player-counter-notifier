@@ -1,4 +1,4 @@
-import { Player } from "./player.type";
+import { Player } from './player.type';
 
 export type StatusResponse = {
     ip: string;
@@ -28,7 +28,7 @@ export type StatusResponse = {
     players: {
         online: number;
         max: number;
-        list?: Player[]
+        list?: Player[];
     };
     version: string;
     online: boolean;

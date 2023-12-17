@@ -1,5 +1,6 @@
-import { StatusResponse } from "./status-response.type";
+import { StatusResponse } from './status-response.type';
 
 export type Cache = {
-    timestamp: Date; response: StatusResponse
-}
+    timestamp: Date;
+    response: StatusResponse;
+};
