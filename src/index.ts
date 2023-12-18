@@ -5,7 +5,7 @@ import { Logger } from './utils/logger.class';
 import { FileSystem } from './file-system/file-system.class';
 import { EMPTY, catchError, firstValueFrom } from 'rxjs';
 
-(async () => {
+(async (): Promise<void> => {
     const logger: Logger = new Logger();
 
     logger.info('Minecraft Player Number Notifier v0.01');

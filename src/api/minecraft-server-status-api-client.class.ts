@@ -38,7 +38,7 @@ export class MinecraftServerStatusApiClient {
         );
     }
 
-    private getCache(server: string) {
+    private getCache(server: string): Cache | undefined {
         return MinecraftServerStatusApiClient.Cache.get(server);
     }
 
