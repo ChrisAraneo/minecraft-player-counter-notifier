@@ -8,7 +8,7 @@ import { EMPTY, catchError, firstValueFrom } from 'rxjs';
 (async (): Promise<void> => {
     const logger: Logger = new Logger();
 
-    logger.info('Minecraft Player Number Notifier v0.01');
+    logger.info('Minecraft Players Number Notifier v0.01');
 
     const currentDirectoryProvider = new CurrentDirectoryProvider();
     const fileSystem = new FileSystem();

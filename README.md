@@ -1,6 +1,6 @@
-# Minecraft Player Number Notifier (v0.0.1)
+# Minecraft Players Number Notifier (v0.0.1)
 
-![Minecraft Player Number Notifier logo](logo.png?raw=true)
+![Minecraft Players Number Notifier logo](logo.png?raw=true)
 
 # License
 
