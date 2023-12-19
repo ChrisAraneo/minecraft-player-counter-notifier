@@ -50,8 +50,9 @@ export class ConfigLoader {
             (typeof (<Config>object).discord === 'object' &&
                 typeof (<Config>object).discord.token === 'string' &&
                 typeof (<Config>object).discord.enabled === 'boolean');
+        const validCacheTTL = typeof (<Config>object)['cache-ttl'] === 'number';
 
-        return validServers && validDiscord;
+        return validServers && validDiscord && validCacheTTL;
     }
 
     private isStringArray(object: unknown): object is string[] {

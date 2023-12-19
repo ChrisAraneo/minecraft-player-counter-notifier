@@ -19,8 +19,13 @@ import { Logger } from './utils/logger.class';
         (error) => logger.error(error),
     );
 
-    const apiClient = new MinecraftServerStatusApiClient();
-    ((config && (config.servers as string[])) || []).forEach((server) => {
+    if (!config) {
+        return;
+    }
+
+    const apiClient = new MinecraftServerStatusApiClient(config);
+
+    ((config.servers as string[]) || []).forEach((server) => {
         apiClient.getNumberOfOnlinePlayers(server).subscribe((number) => {
             logger.info(`Server ${server} has currently: ${number} players.`);
         });

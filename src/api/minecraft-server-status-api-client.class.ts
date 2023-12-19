@@ -3,14 +3,17 @@ import { Observable, from, map, of } from 'rxjs';
 import { Cache } from './cache.type';
 import { Player } from './player.type';
 import { StatusResponse } from './status-response.type';
+import { Config } from '../file-system/config.type';
 
 export class MinecraftServerStatusApiClient {
-    private static readonly CacheTTL: number = 30000;
-
     private static StatusEndpoint = `https://api.mcsrvstat.us/3`;
     private static Cache = new Map<string, Cache>();
 
-    constructor() {}
+    private readonly CacheTTL: number;
+
+    constructor(private config: Config) {
+        this.CacheTTL = this.config['cache-ttl'];
+    }
 
     getPlayersList(server: string, now: Date = new Date()): Observable<Player[]> {
         return this.getServerStatus(server, now).pipe(
@@ -49,9 +52,7 @@ export class MinecraftServerStatusApiClient {
     }
 
     private isCacheOutdated(cached: Cache | undefined, now: Date): boolean {
-        return !(
-            cached?.timestamp && +cached.timestamp + MinecraftServerStatusApiClient.CacheTTL < +now
-        );
+        return !(cached?.timestamp && +cached.timestamp + this.CacheTTL < +now);
     }
 
     private updateCache(server: string, timestamp: Date, response: StatusResponse): void {

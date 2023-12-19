@@ -1,4 +1,5 @@
 {
+    "cache-ttl": 30000,
     "discord": {
         "enabled": true,
         "token": "xxxxx"

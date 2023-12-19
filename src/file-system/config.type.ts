@@ -1,7 +1,8 @@
 export type Config = {
-    servers: string[];
+    'cache-ttl': number;
     discord?: {
         enabled: boolean;
         token: string;
     };
+    servers: string[];
 };
