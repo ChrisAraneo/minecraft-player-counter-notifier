@@ -1,10 +1,10 @@
+import { firstValueFrom } from 'rxjs';
 import { MinecraftServerStatusApiClient } from './api/minecraft-server-status-api-client.class';
 import { ConfigLoader } from './file-system/config-loader.class';
-import { CurrentDirectoryProvider } from './file-system/current-directory-provider.class';
-import { Logger } from './utils/logger.class';
-import { FileSystem } from './file-system/file-system.class';
-import { firstValueFrom } from 'rxjs';
 import { Config } from './file-system/config.type';
+import { CurrentDirectoryProvider } from './file-system/current-directory-provider.class';
+import { FileSystem } from './file-system/file-system.class';
+import { Logger } from './utils/logger.class';
 
 (async (): Promise<void> => {
     const logger: Logger = new Logger();
