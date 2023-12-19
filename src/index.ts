@@ -3,7 +3,8 @@ import { ConfigLoader } from './file-system/config-loader.class';
 import { CurrentDirectoryProvider } from './file-system/current-directory-provider.class';
 import { Logger } from './utils/logger.class';
 import { FileSystem } from './file-system/file-system.class';
-import { EMPTY, catchError, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
+import { Config } from './file-system/config.type';
 
 (async (): Promise<void> => {
     const logger: Logger = new Logger();
@@ -14,18 +15,12 @@ import { EMPTY, catchError, firstValueFrom } from 'rxjs';
     const fileSystem = new FileSystem();
     const configLoader = new ConfigLoader(currentDirectoryProvider, fileSystem);
 
-    const config: any = await firstValueFrom(
-        configLoader.readConfigFile().pipe(
-            catchError((error) => {
-                logger.error(error);
-
-                return EMPTY;
-            }),
-        ),
+    const config: Config | void = await firstValueFrom(configLoader.readConfigFile()).catch(
+        (error) => logger.error(error),
     );
 
     const apiClient = new MinecraftServerStatusApiClient();
-    (config.servers as string[]).forEach((server) => {
+    ((config && (config.servers as string[])) || []).forEach((server) => {
         apiClient.getPlayersList(server).subscribe((players) => {
             logger.info(`Server ${server} has currently: ${players.length} players.`);
             logger.info(`Players online: ${players.map((player) => player.name).join(', ')}`);
