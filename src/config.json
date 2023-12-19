@@ -1,7 +1,7 @@
 {
-    "servers": ["iskyblock.pl"],
     "discord": {
         "enabled": true,
         "token": "xxxxx"
-    }
+    },
+    "servers": ["iskyblock.pl"]
 }
