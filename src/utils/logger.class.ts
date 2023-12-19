@@ -16,6 +16,10 @@ export class Logger {
         this.logger.info(message, ...meta);
     }
 
+    warn(message: string, ...meta: any[]): void {
+        this.logger.warn(message, ...meta);
+    }
+
     error(message: string, ...meta: any[]): void {
         this.logger.error(message, ...meta);
     }
