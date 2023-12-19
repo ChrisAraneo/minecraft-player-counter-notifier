@@ -1,8 +1,8 @@
 import fetch from 'node-fetch';
-import { StatusResponse } from './status-response.type';
-import { Cache } from './cache.type';
 import { Observable, from, map, of } from 'rxjs';
+import { Cache } from './cache.type';
 import { Player } from './player.type';
+import { StatusResponse } from './status-response.type';
 
 export class MinecraftServerStatusApiClient {
     private static readonly CacheTTL: number = 30000;
@@ -13,6 +13,16 @@ export class MinecraftServerStatusApiClient {
     constructor() {}
 
     getPlayersList(server: string, now: Date = new Date()): Observable<Player[]> {
+        return this.getServerStatus(server, now).pipe(
+            map((response) => response.players.list || []),
+        );
+    }
+
+    getNumberOfOnlinePlayers(server: string, now: Date = new Date()): Observable<number> {
+        return this.getServerStatus(server, now).pipe(map((response) => response.players.online));
+    }
+
+    private getServerStatus(server: string, now: Date): Observable<StatusResponse> {
         const cached = this.getCache(server);
 
         if (this.isCacheOutdated(cached, now)) {
@@ -20,16 +30,12 @@ export class MinecraftServerStatusApiClient {
                 this.fetchServerStatus(server).then((response) => {
                     this.updateCache(server, now, response);
 
-                    return response.players?.list || [];
+                    return response;
                 }),
             );
         } else {
-            return of(cached?.response.players?.list || []);
+            return of(cached?.response);
         }
-    }
-
-    getNumberOfOnlinePlayers(server: string, now: Date = new Date()): Observable<number> {
-        return this.getPlayersList(server, now).pipe(map((players) => players.length));
     }
 
     private async fetchServerStatus(server: string): Promise<StatusResponse> {

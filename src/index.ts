@@ -21,9 +21,16 @@ import { Logger } from './utils/logger.class';
 
     const apiClient = new MinecraftServerStatusApiClient();
     ((config && (config.servers as string[])) || []).forEach((server) => {
+        apiClient.getNumberOfOnlinePlayers(server).subscribe((number) => {
+            logger.info(`Server ${server} has currently: ${number} players.`);
+        });
+
         apiClient.getPlayersList(server).subscribe((players) => {
-            logger.info(`Server ${server} has currently: ${players.length} players.`);
-            logger.info(`Players online: ${players.map((player) => player.name).join(', ')}`);
+            if (players.length > 0) {
+                logger.info(`Players online: ${players.map((player) => player.name).join(', ')}`);
+            } else {
+                logger.warn(`Can't list names of online players on ${server}.`);
+            }
         });
     });
 })();
