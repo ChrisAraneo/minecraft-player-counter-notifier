@@ -1,10 +1,11 @@
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, interval, map, mergeMap, tap } from 'rxjs';
 import { MinecraftServerStatusApiClient } from './api/minecraft-server-status-api-client.class';
 import { ConfigLoader } from './file-system/config-loader.class';
 import { Config } from './file-system/config.type';
 import { CurrentDirectoryProvider } from './file-system/current-directory-provider.class';
 import { FileSystem } from './file-system/file-system.class';
 import { Logger } from './utils/logger.class';
+import { DiscordApiClient } from './api/discord-api-client.class';
 
 (async (): Promise<void> => {
     const logger: Logger = new Logger();
@@ -23,19 +24,49 @@ import { Logger } from './utils/logger.class';
         return;
     }
 
+    const discordApiClient: DiscordApiClient | null = config?.discord.enabled
+        ? new DiscordApiClient(config, logger)
+        : null;
+
     const apiClient = new MinecraftServerStatusApiClient(config);
 
-    ((config.servers as string[]) || []).forEach((server) => {
-        apiClient.getNumberOfOnlinePlayers(server).subscribe((number) => {
-            logger.info(`Server ${server} has currently: ${number} players.`);
-        });
+    interval(config.interval)
+        .pipe(
+            tap(() => {
+                ((config.servers as string[]) || []).forEach((server) => {
+                    const getNumberOfOnlinePlayers = apiClient.getNumberOfOnlinePlayers(server);
+                    const getListOfPlayerNames = apiClient.getPlayersList(server);
 
-        apiClient.getPlayersList(server).subscribe((players) => {
-            if (players.length > 0) {
-                logger.info(`Players online: ${players.map((player) => player.name).join(', ')}`);
-            } else {
-                logger.warn(`Can't list names of online players on ${server}.`);
-            }
-        });
-    });
+                    getNumberOfOnlinePlayers
+                        .pipe(
+                            tap((number) =>
+                                logger.info(`Server ${server} has currently: ${number} players.`),
+                            ),
+                            mergeMap((number) =>
+                                getListOfPlayerNames.pipe(
+                                    tap((players) => {
+                                        if (players.length > 0) {
+                                            logger.info(
+                                                `Players online: ${players
+                                                    .map((player) => player.name)
+                                                    .join(', ')}`,
+                                            );
+                                        } else {
+                                            logger.warn(
+                                                `Can't list names of online players on ${server}.`,
+                                            );
+                                        }
+
+                                        if (discordApiClient) {
+                                            discordApiClient.sendMessage(server, number, players);
+                                        }
+                                    }),
+                                ),
+                            ),
+                        )
+                        .subscribe(); // TODO Refactor into single subscription
+                });
+            }),
+        )
+        .subscribe();
 })();
