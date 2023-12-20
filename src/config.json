@@ -4,5 +4,6 @@
         "enabled": true,
         "token": "xxxxx"
     },
+    "interval": 60000,
     "servers": ["iskyblock.pl"]
 }

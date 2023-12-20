@@ -5,4 +5,5 @@ export type Config = {
         token: string;
     };
     servers: string[];
+    interval: number;
 };
