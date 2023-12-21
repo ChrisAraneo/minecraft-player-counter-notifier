@@ -1,7 +1,7 @@
 import { Client, Events, Partials } from 'discord.js';
 import { Config } from '../file-system/config.type';
 import { Logger } from '../utils/logger.class';
-import { Player } from './player.type';
+import { Player } from '../models/player.type';
 
 export class DiscordApiClient {
     private client: Client;

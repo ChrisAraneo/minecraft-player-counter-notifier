@@ -1,4 +1,4 @@
-import { Player } from './player.type';
+import { Player } from '../models/player.type';
 
 export type StatusResponse = {
     ip: string;

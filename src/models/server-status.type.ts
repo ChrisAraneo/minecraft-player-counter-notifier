@@ -1,4 +1,4 @@
-import { Player } from '../api/player.type';
+import { Player } from './player.type';
 
 export type ServerStatus = {
     server: string;

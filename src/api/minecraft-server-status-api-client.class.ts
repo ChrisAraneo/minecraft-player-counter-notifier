@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { Observable, from, map, of } from 'rxjs';
 import { Cache } from './cache.type';
-import { Player } from './player.type';
+import { Player } from '../models/player.type';
 import { StatusResponse } from './status-response.type';
 import { Config } from '../file-system/config.type';
 
