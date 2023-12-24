@@ -10,8 +10,9 @@ export class DiscordApiClient {
     constructor(
         private config: Config,
         private logger: Logger,
+        private token: string,
     ) {
-        if (this.config?.discord.enabled) {
+        if (this.config?.discord) {
             this.initializeClient();
             this.login();
             this.subscribeToReceivingMessages();
@@ -47,7 +48,7 @@ export class DiscordApiClient {
                     this.logger.info(`Discord bot is ready. Logged as: ${client.user.tag}`);
                     resolve();
                 });
-                this.client.login(this.config?.discord.token);
+                this.client.login(this.token);
             } catch (error) {
                 reject(error);
             }

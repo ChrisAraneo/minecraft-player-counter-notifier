@@ -47,9 +47,7 @@ export class ConfigLoader {
         const validDiscord =
             (<Config>object).discord === undefined ||
             (<Config>object).discord === null ||
-            (typeof (<Config>object).discord === 'object' &&
-                typeof (<Config>object).discord.token === 'string' &&
-                typeof (<Config>object).discord.enabled === 'boolean');
+            typeof (<Config>object).discord === 'boolean';
         const validCacheTTL = typeof (<Config>object)['cache-ttl'] === 'number';
 
         return validServers && validDiscord && validCacheTTL;

@@ -1,9 +1,6 @@
 {
     "cache-ttl": 30000,
-    "discord": {
-        "enabled": true,
-        "token": "xxxxx"
-    },
+    "discord": true,
     "interval": 60000,
-    "servers": ["iskyblock.pl"]
+    "servers": ["wulfixowo.maxcraft.pl"]
 }
