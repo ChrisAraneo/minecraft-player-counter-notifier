@@ -14,7 +14,7 @@ Example:
     "cache-ttl": 30000,
     "discord": true,
     "interval": 60000,
-    "servers": ["wulfixowo.maxcraft.pl"]
+    "servers": ["server.address.here.com"]
 }
 ```
 
