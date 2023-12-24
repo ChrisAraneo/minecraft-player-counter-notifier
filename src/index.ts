@@ -36,6 +36,8 @@ function getDiscordToken(): string | null {
     const logger: Logger = new Logger();
 
     logger.info('Minecraft Players Number Notifier v0.01');
+    logger.info('Program arguments:');
+    logger.info(JSON.stringify(process.argv));
 
     const currentDirectoryProvider = new CurrentDirectoryProvider();
     const fileSystem = new FileSystem();
