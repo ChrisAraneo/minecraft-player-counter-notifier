@@ -1,7 +1,7 @@
-import { firstValueFrom, interval, map, mergeMap, tap } from 'rxjs';
+import { firstValueFrom, interval, mergeMap, tap } from 'rxjs';
 import { MinecraftServerStatusApiClient } from './api/minecraft-server-status-api-client.class';
 import { ConfigLoader } from './file-system/config-loader.class';
-import { Config } from './file-system/config.type';
+import { Config } from './models/config.type';
 import { CurrentDirectoryProvider } from './file-system/current-directory-provider.class';
 import { FileSystem } from './file-system/file-system.class';
 import { Logger } from './utils/logger.class';

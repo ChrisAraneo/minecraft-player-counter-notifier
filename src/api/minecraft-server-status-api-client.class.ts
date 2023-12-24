@@ -3,7 +3,7 @@ import { Observable, from, map, of } from 'rxjs';
 import { Cache } from './cache.type';
 import { Player } from '../models/player.type';
 import { StatusResponse } from './status-response.type';
-import { Config } from '../file-system/config.type';
+import { Config } from '../models/config.type';
 
 export class MinecraftServerStatusApiClient {
     private static StatusEndpoint = `https://api.mcsrvstat.us/3`;

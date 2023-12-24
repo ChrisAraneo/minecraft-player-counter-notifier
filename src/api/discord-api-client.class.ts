@@ -1,5 +1,5 @@
 import { Client, Events, Partials } from 'discord.js';
-import { Config } from '../file-system/config.type';
+import { Config } from '../models/config.type';
 import { Logger } from '../utils/logger.class';
 import { Player } from '../models/player.type';
 
