@@ -19,6 +19,7 @@ import { Player } from './models/player.type';
 import { ServerStatus } from './models/server-status.type';
 import { Store } from './store/store.class';
 import { Logger } from './utils/logger.class';
+import { LogLevel } from './utils/log-level.type';
 
 const DISCORD_TOKEN = 'DISCORD_TOKEN';
 
@@ -33,32 +34,29 @@ function getDiscordToken(): string | null {
 }
 
 (async (): Promise<void> => {
-    const logger: Logger = new Logger();
-
-    logger.info('Minecraft Players Number Notifier v0.01');
-    logger.info('Program arguments:');
-    logger.info(JSON.stringify(process.argv));
-
     const currentDirectoryProvider = new CurrentDirectoryProvider();
     const fileSystem = new FileSystem();
     const configLoader = new ConfigLoader(currentDirectoryProvider, fileSystem);
-
     const config: Config | void = await firstValueFrom(configLoader.readConfigFile()).catch(
         (error) => logger.error(error),
     );
+    const store = new Store();
 
     if (!config) {
         return;
     }
 
-    const store = new Store();
-    const token: string | null = getDiscordToken();
+    const logger: Logger = new Logger(config?.['log-level'] as LogLevel);
 
+    logger.info('Minecraft Players Number Notifier v0.01');
+    logger.info('Program arguments:');
+    logger.info(JSON.stringify(process.argv));
+
+    const token: string | null = getDiscordToken();
     const discordApiClient: DiscordApiClient | null = config.discord
         ? new DiscordApiClient(config, logger, token)
         : null;
-
-    const apiClient = new MinecraftServerStatusApiClient(config);
+    const apiClient = new MinecraftServerStatusApiClient(config, logger);
 
     function logNumberOfPlayers(server: string): MonoTypeOperatorFunction<unknown> {
         return tap((number) => logger.info(`Server ${server} has currently: ${number} players.`));

@@ -1,10 +1,11 @@
 import { Logger as WinstonLogger, format, createLogger, transports } from 'winston';
+import { LogLevel } from './log-level.type';
 const { combine, timestamp, printf, colorize, prettyPrint, simple } = format;
 
 export class Logger {
     private logger: WinstonLogger;
 
-    constructor() {
+    constructor(private level: LogLevel) {
         this.initialize();
     }
 
@@ -26,7 +27,7 @@ export class Logger {
 
     private initialize(): void {
         this.logger = createLogger({
-            level: 'debug',
+            level: this.level,
             format: combine(
                 timestamp({
                     format: 'YYYY-MM-DD HH:MM:SS',
