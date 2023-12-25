@@ -41,6 +41,13 @@ export class MinecraftServerStatusApiClient {
                 }),
             );
         } else {
+            this.logger.debug(
+                `Server status cache didn't expire yet.`,
+                new Date(cached?.timestamp || 0).toISOString(),
+                '<',
+                now.toISOString(),
+            );
+
             return of(cached?.response);
         }
     }
@@ -53,7 +60,7 @@ export class MinecraftServerStatusApiClient {
         return fetch(url)
             .then((response) => response.json() as unknown as StatusResponse)
             .then((json) => {
-                this.logger.debug(`GET response ${json}`);
+                this.logger.debug(`GET response`, json);
 
                 return json;
             });
@@ -64,7 +71,7 @@ export class MinecraftServerStatusApiClient {
     }
 
     private isCacheOutdated(cached: Cache | undefined, now: Date): boolean {
-        return !(cached?.timestamp && +cached.timestamp + this.CacheTTL < +now);
+        return !cached?.timestamp || +cached.timestamp + this.CacheTTL > +now;
     }
 
     private updateCache(server: string, timestamp: Date, response: StatusResponse): void {
