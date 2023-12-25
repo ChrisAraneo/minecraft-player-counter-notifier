@@ -4,6 +4,7 @@ import { Cache } from './cache.type';
 import { Player } from '../models/player.type';
 import { StatusResponse } from './status-response.type';
 import { Config } from '../models/config.type';
+import { Logger } from '../utils/logger.class';
 
 export class MinecraftServerStatusApiClient {
     private static StatusEndpoint = `https://api.mcsrvstat.us/3`;
@@ -11,7 +12,10 @@ export class MinecraftServerStatusApiClient {
 
     private readonly CacheTTL: number;
 
-    constructor(private config: Config) {
+    constructor(
+        private config: Config,
+        private logger: Logger,
+    ) {
         this.CacheTTL = this.config['cache-ttl'];
     }
 
@@ -42,9 +46,17 @@ export class MinecraftServerStatusApiClient {
     }
 
     private async fetchServerStatus(server: string): Promise<StatusResponse> {
-        return fetch(`${MinecraftServerStatusApiClient.StatusEndpoint}/${server}`).then(
-            (response) => response.json() as unknown as StatusResponse,
-        );
+        const url = `${MinecraftServerStatusApiClient.StatusEndpoint}/${server}`;
+
+        this.logger.debug(`GET ${url}`);
+
+        return fetch(url)
+            .then((response) => response.json() as unknown as StatusResponse)
+            .then((json) => {
+                this.logger.debug(`GET response ${json}`);
+
+                return json;
+            });
     }
 
     private getCache(server: string): Cache | undefined {
