@@ -42,10 +42,9 @@ export class MinecraftServerStatusApiClient {
             );
         } else {
             this.logger.debug(
-                `Server status cache didn't expire yet.`,
-                new Date(cached?.timestamp || 0).toISOString(),
-                '<',
-                now.toISOString(),
+                `Status cache didn't expire yet ${
+                    new Date(cached?.timestamp || 0).toISOString() + ' < ' + now.toISOString()
+                }`,
             );
 
             return of(cached?.response);
