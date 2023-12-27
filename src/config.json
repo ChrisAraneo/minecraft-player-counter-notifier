@@ -3,5 +3,6 @@
     "discord": true,
     "interval": 60000,
     "log-level": "debug",
+    "recipients": [],
     "servers": ["wulfixowo.maxcraft.pl"]
 }

@@ -44,13 +44,20 @@ export class ConfigLoader {
 
     private isConfig(object: unknown): object is Config {
         const validServers = this.isStringArray((<Config>object).servers);
-        const validDiscord =
-            (<Config>object).discord === undefined ||
-            (<Config>object).discord === null ||
-            typeof (<Config>object).discord === 'boolean';
+        const validDiscord = typeof (<Config>object).discord === 'boolean';
         const validCacheTTL = typeof (<Config>object)['cache-ttl'] === 'number';
+        const validInterval = typeof (<Config>object).interval === 'number';
+        const validLogLevel = typeof (<Config>object)['log-level'] === 'string';
+        const validRecipients = this.isStringArray((<Config>object).recipients);
 
-        return validServers && validDiscord && validCacheTTL;
+        return (
+            validServers &&
+            validDiscord &&
+            validCacheTTL &&
+            validInterval &&
+            validLogLevel &&
+            validRecipients
+        );
     }
 
     private isStringArray(object: unknown): object is string[] {

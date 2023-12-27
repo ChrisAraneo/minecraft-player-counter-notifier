@@ -1,4 +1,6 @@
+import { ArgumentKey } from './argument-key.type';
+
 export type Argument = {
-    key: string;
+    key: ArgumentKey;
     value: unknown;
 };

@@ -5,22 +5,24 @@ import { Player } from '../models/player.type';
 
 export class DiscordApiClient {
     private client: Client;
-    private userIds: string[] = [];
+    private recipientIds: string[] = [];
 
     constructor(
         private config: Config,
         private logger: Logger,
         private token: string,
+        recipientIds: string[] = [],
     ) {
         if (this.config?.discord) {
             this.initializeClient();
+            this.addRecipients(recipientIds);
             this.login();
             this.subscribeToReceivingMessages();
         }
     }
 
     sendMessage(server: string, numberOfPlayers: number, playersList: Player[]): void {
-        this.userIds.forEach((id) => {
+        this.recipientIds.forEach((id) => {
             this.client.users.fetch(id).then((user) => {
                 this.logger.info(`Sending message to user ${user.id}`);
 
@@ -61,10 +63,10 @@ export class DiscordApiClient {
                 return;
             }
 
-            const user = this.userIds.find((id) => id === message.author.id);
+            const user = this.recipientIds.find((id) => id === message.author.id);
 
             if (!user) {
-                this.userIds.push(message.author.id);
+                this.addRecipient(message.author.id);
             }
 
             const name = message.author.globalName;
@@ -76,5 +78,14 @@ export class DiscordApiClient {
                     this.logger.error(`Could not send message to ${name}`, ...error);
                 });
         });
+    }
+
+    private addRecipients(ids: string[]): void {
+        ids.forEach((id) => this.addRecipient(id));
+    }
+
+    private addRecipient(id: string): void {
+        this.logger.info(`Adding recipient with ID: ${id}`);
+        this.recipientIds.push(id);
     }
 }

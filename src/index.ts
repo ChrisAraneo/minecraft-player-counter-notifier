@@ -20,20 +20,11 @@ import { ServerStatus } from './models/server-status.type';
 import { Store } from './store/store.class';
 import { Logger } from './utils/logger.class';
 import { LogLevel } from './utils/log-level.type';
-
-const DISCORD_TOKEN = 'DISCORD_TOKEN';
-
-function getDiscordToken(): string | null {
-    return (
-        process.argv
-            .slice(2, process.argv.length)
-            .map((arg) => arg.split('='))
-            .filter((item) => (item?.length > 0 ? item[0] === DISCORD_TOKEN : false))
-            .map((item) => (item?.length > 1 ? (item[1] as string) : null))?.[0] || null
-    );
-}
+import { ProgramArgumentsLoader } from './utils/program-arguments-loader.class';
+import { DISCORD_TOKEN, RECIPIENTS } from './utils/argument-keys.consts';
 
 (async (): Promise<void> => {
+    const programArgumentsLoader = new ProgramArgumentsLoader();
     const currentDirectoryProvider = new CurrentDirectoryProvider();
     const fileSystem = new FileSystem();
     const configLoader = new ConfigLoader(currentDirectoryProvider, fileSystem);
@@ -49,12 +40,23 @@ function getDiscordToken(): string | null {
     const logger: Logger = new Logger(config?.['log-level'] as LogLevel);
 
     logger.info('Minecraft Players Number Notifier v0.01');
-    logger.info('Program arguments:');
-    logger.info(JSON.stringify(process.argv));
+    logger.info(`Program arguments: ${JSON.stringify(process.argv)}`);
 
-    const token: string | null = getDiscordToken();
+    const args = programArgumentsLoader.load();
+    const token: string | null = (args.find((item) => item.key === DISCORD_TOKEN)?.value ||
+        null) as string | null;
+    const predefinedRecipients = (args.find((item) => item.key === RECIPIENTS)?.value || []) as
+        | string
+        | string[];
     const discordApiClient: DiscordApiClient | null = config.discord
-        ? new DiscordApiClient(config, logger, token)
+        ? new DiscordApiClient(
+              config,
+              logger,
+              token,
+              Array.isArray(predefinedRecipients)
+                  ? [...predefinedRecipients]
+                  : [predefinedRecipients],
+          )
         : null;
     const apiClient = new MinecraftServerStatusApiClient(config, logger);
 
