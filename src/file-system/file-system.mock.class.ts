@@ -40,7 +40,14 @@ export class FileSystemMock extends FileSystem {
         } else if (this.isCorrectConfigFile(path)) {
             callback(
                 null,
-                '{"backupDirectory":"./backups","files":[{"filename":"this-is-example-filename.txt"}],"interval":3600,"mode":"backup","roots":["C:\\\\","D:\\\\","E:\\\\"]}',
+                `{
+                    "cache-ttl": 30000,
+                    "discord": true,
+                    "interval": 60000,
+                    "log-level": "debug",
+                    "recipients": [],
+                    "servers": ["0.0.0.0"]
+                }`,
             );
         } else if (this.isCorrectJsonFile(path)) {
             callback(null, '{"name":"Joel"}');
