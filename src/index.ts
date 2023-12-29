@@ -11,9 +11,9 @@ import {
 } from 'rxjs';
 import { DiscordApiClient } from './api/discord-api-client.class';
 import { MinecraftServerStatusApiClient } from './api/minecraft-server-status-api-client.class';
-import { ConfigLoader } from './file-system/config-loader.class';
-import { CurrentDirectoryProvider } from './file-system/current-directory-provider.class';
-import { FileSystem } from './file-system/file-system.class';
+import { ConfigLoader } from './file-system/config-loader/config-loader.class';
+import { CurrentDirectoryProvider } from './file-system/current-directory-provider/current-directory-provider.class';
+import { FileSystem } from './file-system/file-system/file-system.class';
 import { Config } from './models/config.type';
 import { Player } from './models/player.type';
 import { ServerStatus } from './models/server-status.type';

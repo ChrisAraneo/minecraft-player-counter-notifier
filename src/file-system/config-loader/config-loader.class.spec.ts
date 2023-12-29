@@ -1,10 +1,10 @@
 import { firstValueFrom } from 'rxjs';
 import { ConfigLoader } from './config-loader.class';
 import { CONFIG_READING_ERROR_MESSAGE, INVALID_CONFIG_ERROR_MESSAGE } from './config-loader.consts';
-import { CurrentDirectoryProvider } from './current-directory-provider.class';
-import { CurrentDirectoryProviderMock } from './current-directory-provider.mock.class';
-import { FileSystem } from './file-system.class';
-import { FileSystemMock } from './file-system.mock.class';
+import { CurrentDirectoryProvider } from '../current-directory-provider/current-directory-provider.class';
+import { CurrentDirectoryProviderMock } from '../current-directory-provider/current-directory-provider.mock.class';
+import { FileSystem } from '../file-system/file-system.class';
+import { FileSystemMock } from '../file-system/file-system.mock.class';
 
 let fileSystem: FileSystem;
 let currentDirectoryProvider: CurrentDirectoryProvider;

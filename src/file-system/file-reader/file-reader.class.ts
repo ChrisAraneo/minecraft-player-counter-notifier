@@ -1,6 +1,6 @@
-import { File } from '../models/file.class';
+import { File } from '../../models/file.class';
 import { ReadFileResult } from './read-file-result.type';
-import { FileSystem } from './file-system.class';
+import { FileSystem } from '../file-system/file-system.class';
 import { Observable, forkJoin } from 'rxjs';
 
 export abstract class FileReader<T extends File<any>> {

@@ -1,11 +1,11 @@
 import Path from 'path';
 import { Observable, catchError, map } from 'rxjs';
-import { Config } from '../models/config.type';
-import { JsonFile } from '../models/json-file.class';
+import { Config } from '../../models/config.type';
+import { JsonFile } from '../../models/json-file.class';
 import { CONFIG_READING_ERROR_MESSAGE, INVALID_CONFIG_ERROR_MESSAGE } from './config-loader.consts';
-import { CurrentDirectoryProvider } from './current-directory-provider.class';
-import { FileSystem } from './file-system.class';
-import { JsonFileReader } from './json-file-reader.class';
+import { CurrentDirectoryProvider } from '../current-directory-provider/current-directory-provider.class';
+import { FileSystem } from '../file-system/file-system.class';
+import { JsonFileReader } from '../file-reader/json-file-reader.class';
 
 export class ConfigLoader {
     private jsonFileReader: JsonFileReader;
