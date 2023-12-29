@@ -1,5 +1,6 @@
 import { firstValueFrom } from 'rxjs';
 import { ConfigLoader } from './config-loader.class';
+import { CONFIG_READING_ERROR_MESSAGE, INVALID_CONFIG_ERROR_MESSAGE } from './config-loader.consts';
 import { CurrentDirectoryProvider } from './current-directory-provider.class';
 import { CurrentDirectoryProviderMock } from './current-directory-provider.mock.class';
 import { FileSystem } from './file-system.class';
@@ -10,13 +11,14 @@ let currentDirectoryProvider: CurrentDirectoryProvider;
 let configLoader: ConfigLoader;
 
 beforeEach(() => {
-    fileSystem = new FileSystemMock();
     currentDirectoryProvider = new CurrentDirectoryProviderMock();
-    configLoader = new ConfigLoader(currentDirectoryProvider, fileSystem);
 });
 
 describe('ConfigLoader', () => {
-    it('#readConfigFile should read config.json', async () => {
+    it('#readConfigFile should return config object when file contains valid config', async () => {
+        fileSystem = new FileSystemMock();
+        configLoader = new ConfigLoader(currentDirectoryProvider, fileSystem);
+
         const config = await firstValueFrom(configLoader.readConfigFile());
 
         expect(config).toStrictEqual({
@@ -28,4 +30,55 @@ describe('ConfigLoader', () => {
             servers: ['0.0.0.0'],
         });
     });
+
+    it('#readConfigFile should throw error when file contains invalid properties or values', async () => {
+        fileSystem = new InvalidConfigFileSystemMock();
+        configLoader = new ConfigLoader(currentDirectoryProvider, fileSystem);
+
+        try {
+            await firstValueFrom(configLoader.readConfigFile());
+        } catch (error: any) {
+            expect(error?.message).toBe(INVALID_CONFIG_ERROR_MESSAGE);
+        }
+    });
+
+    it('#readConfigFile should throw error when file is invalid json', async () => {
+        fileSystem = new InvalidJsonFileSystemMock();
+        configLoader = new ConfigLoader(currentDirectoryProvider, fileSystem);
+
+        try {
+            await firstValueFrom(configLoader.readConfigFile());
+        } catch (error: any) {
+            expect(error?.message).toBe(CONFIG_READING_ERROR_MESSAGE);
+        }
+    });
+
+    it('#readConfigFile should throw error when result of reading file is empty', async () => {
+        fileSystem = new EmptyConfigFileSystemMock();
+        configLoader = new ConfigLoader(currentDirectoryProvider, fileSystem);
+
+        try {
+            await firstValueFrom(configLoader.readConfigFile());
+        } catch (error: any) {
+            expect(error?.message).toBe(CONFIG_READING_ERROR_MESSAGE);
+        }
+    });
 });
+
+class InvalidConfigFileSystemMock extends FileSystemMock {
+    readFile(_path: string, _options, callback: (error: any, data?: any) => any): void {
+        callback(null, `{"interval": null, "recipients": false,"servers": ["1.1.1.1"]}`);
+    }
+}
+
+class InvalidJsonFileSystemMock extends FileSystemMock {
+    readFile(_path: string, _options, callback: (error: any, data?: any) => any): void {
+        callback(null, `Hello World!`);
+    }
+}
+
+class EmptyConfigFileSystemMock extends FileSystemMock {
+    readFile(_path: string, _options, callback: (error: any, data?: any) => any): void {
+        callback(null, undefined);
+    }
+}
