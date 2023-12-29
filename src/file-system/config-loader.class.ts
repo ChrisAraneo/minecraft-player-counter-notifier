@@ -1,10 +1,11 @@
 import Path from 'path';
-import { JsonFile } from '../models/json-file.class';
-import { CurrentDirectoryProvider } from './current-directory-provider.class';
-import { JsonFileReader } from './json-file-reader.class';
-import { FileSystem } from './file-system.class';
 import { Observable, catchError, map } from 'rxjs';
 import { Config } from '../models/config.type';
+import { JsonFile } from '../models/json-file.class';
+import { CONFIG_READING_ERROR_MESSAGE, INVALID_CONFIG_ERROR_MESSAGE } from './config-loader.consts';
+import { CurrentDirectoryProvider } from './current-directory-provider.class';
+import { FileSystem } from './file-system.class';
+import { JsonFileReader } from './json-file-reader.class';
 
 export class ConfigLoader {
     private jsonFileReader: JsonFileReader;
@@ -22,27 +23,25 @@ export class ConfigLoader {
 
         return this.jsonFileReader.readFile(path).pipe(
             catchError(() => {
-                throw Error(
-                    "Could not read config.json file. If it doesn't exist then create config.json file in the application directory.",
-                );
+                throw Error(CONFIG_READING_ERROR_MESSAGE);
             }),
             map((result: unknown) => {
-                if (!result) {
-                    throw Error('File config.json is empty.');
-                }
-
                 const content: unknown = (result as JsonFile)?.getContent();
 
                 if (this.isConfig(content)) {
                     return content;
                 } else {
-                    throw Error('File config.json contains invalid config.');
+                    throw Error(INVALID_CONFIG_ERROR_MESSAGE);
                 }
             }),
         );
     }
 
     private isConfig(object: unknown): object is Config {
+        if (!object) {
+            return false;
+        }
+
         const validServers = this.isStringArray((<Config>object).servers);
         const validDiscord = typeof (<Config>object).discord === 'boolean';
         const validCacheTTL = typeof (<Config>object)['cache-ttl'] === 'number';
