@@ -1,7 +1,11 @@
-import { ArgumentKey } from '../utils/argument-key.type';
-import { DISCORD_TOKEN, RECIPIENTS } from '../utils/argument-keys.consts';
-import { Argument } from '../utils/argument.type';
+import { ArgumentKey } from './argument-key.type';
+import { DISCORD_TOKEN, RECIPIENTS } from './argument-keys.consts';
+import { Argument } from './argument.type';
 import { Process } from './process.class';
+import {
+    INCORRECT_ARGUMENT_KEY_ERROR_MESSAGE,
+    INCORRECT_ARGUMENT_VALUE_ERROR_MESSAGE,
+} from './program-arguments-provider.consts';
 
 export class ProgramArgumentsProvider {
     private arguments?: string[];
@@ -18,7 +22,7 @@ export class ProgramArgumentsProvider {
                 const key: string = parts[0];
 
                 if (!this.isArgumentKeyValid(key)) {
-                    throw Error('Argument has incorrect key.');
+                    throw Error(INCORRECT_ARGUMENT_KEY_ERROR_MESSAGE);
                 }
 
                 const valueParts = parts[1].split(';');
@@ -28,7 +32,7 @@ export class ProgramArgumentsProvider {
                     value: valueParts.length > 1 ? valueParts : valueParts[0],
                 };
             } else {
-                throw Error('Incorrect program argument or no value passed.');
+                throw Error(INCORRECT_ARGUMENT_VALUE_ERROR_MESSAGE);
             }
         });
     }

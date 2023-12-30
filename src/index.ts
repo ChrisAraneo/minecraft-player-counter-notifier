@@ -16,10 +16,10 @@ import { FileSystem } from './file-system/file-system/file-system.class';
 import { Config } from './models/config.type';
 import { Player } from './models/player.type';
 import { ServerStatus } from './models/server-status.type';
+import { DISCORD_TOKEN, RECIPIENTS } from './process/argument-keys.consts';
 import { Process } from './process/process.class';
 import { ProgramArgumentsProvider } from './process/program-arguments-provider.class';
 import { Store } from './store/store.class';
-import { DISCORD_TOKEN, RECIPIENTS } from './utils/argument-keys.consts';
 import { LogLevel } from './utils/log-level.type';
 import { Logger } from './utils/logger.class';
 
