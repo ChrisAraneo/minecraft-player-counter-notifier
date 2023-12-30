@@ -1,7 +1,9 @@
-import { lastValueFrom } from 'rxjs';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { FileSystem } from '../file-system/file-system.class';
 import { FileSystemMock } from '../file-system/file-system.mock.class';
+import { FILE_INFORMATION_READING_ERROR_MESSAGE } from './file-reader.consts';
 import { JsonFileReader } from './json-file-reader.class';
+import { JSON_FILE_PARSING_ERROR_MESSAGE } from './json-file-reader.consts';
 
 let fileSystem: FileSystem;
 let reader: JsonFileReader;
@@ -30,5 +32,21 @@ describe('JsonFileReader', () => {
 
         const calls = jest.mocked(fileSystem.readFile).mock.calls;
         expect(calls.length).toBe(3);
+    });
+
+    it('#readFile should throw error when file is invalid json', async () => {
+        try {
+            await firstValueFrom(reader.readFile('test.txt'));
+        } catch (error: any) {
+            expect(error?.message).toBe(JSON_FILE_PARSING_ERROR_MESSAGE);
+        }
+    });
+
+    it('#readFile should throw error when file does not exist', async () => {
+        try {
+            await firstValueFrom(reader.readFile('not-existing-file.bin'));
+        } catch (error: any) {
+            expect(error).toContain(FILE_INFORMATION_READING_ERROR_MESSAGE);
+        }
     });
 });
