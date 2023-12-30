@@ -3,7 +3,7 @@ import { Argument } from '../utils/argument.type';
 import { ArgumentKey } from '../utils/argument-key.type';
 import { DISCORD_TOKEN, RECIPIENTS } from '../utils/argument-keys.consts';
 
-export class ProgramArgumentsLoader {
+export class ProgramArgumentsProvider {
     private arguments?: string[];
 
     constructor() {

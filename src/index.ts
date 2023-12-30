@@ -17,14 +17,14 @@ import { FileSystem } from './file-system/file-system/file-system.class';
 import { Config } from './models/config.type';
 import { Player } from './models/player.type';
 import { ServerStatus } from './models/server-status.type';
-import { ProgramArgumentsLoader } from './process/program-arguments-loader.class';
+import { ProgramArgumentsProvider } from './process/program-arguments-provider.class';
 import { Store } from './store/store.class';
 import { DISCORD_TOKEN, RECIPIENTS } from './utils/argument-keys.consts';
 import { LogLevel } from './utils/log-level.type';
 import { Logger } from './utils/logger.class';
 
 (async (): Promise<void> => {
-    const programArgumentsLoader = new ProgramArgumentsLoader();
+    const programArgumentsProvider = new ProgramArgumentsProvider();
     const currentDirectoryProvider = new CurrentDirectoryProvider();
     const fileSystem = new FileSystem();
     const configLoader = new ConfigLoader(currentDirectoryProvider, fileSystem);
@@ -42,7 +42,7 @@ import { Logger } from './utils/logger.class';
     logger.info('Minecraft Players Number Notifier v0.01');
     logger.info(`Program arguments: ${JSON.stringify(process.argv)}`);
 
-    const args = programArgumentsLoader.load();
+    const args = programArgumentsProvider.load();
     const token: string | null = (args.find((item) => item.key === DISCORD_TOKEN)?.value ||
         null) as string | null;
     const predefinedRecipients = (args.find((item) => item.key === RECIPIENTS)?.value || []) as
