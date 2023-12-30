@@ -17,11 +17,11 @@ import { FileSystem } from './file-system/file-system/file-system.class';
 import { Config } from './models/config.type';
 import { Player } from './models/player.type';
 import { ServerStatus } from './models/server-status.type';
+import { ProgramArgumentsLoader } from './process/program-arguments-loader.class';
 import { Store } from './store/store.class';
-import { Logger } from './utils/logger.class';
-import { LogLevel } from './utils/log-level.type';
-import { ProgramArgumentsLoader } from './utils/program-arguments-loader.class';
 import { DISCORD_TOKEN, RECIPIENTS } from './utils/argument-keys.consts';
+import { LogLevel } from './utils/log-level.type';
+import { Logger } from './utils/logger.class';
 
 (async (): Promise<void> => {
     const programArgumentsLoader = new ProgramArgumentsLoader();

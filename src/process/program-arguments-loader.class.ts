@@ -1,7 +1,7 @@
 import process from 'node:process';
-import { Argument } from './argument.type';
-import { ArgumentKey } from './argument-key.type';
-import { DISCORD_TOKEN, RECIPIENTS } from './argument-keys.consts';
+import { Argument } from '../utils/argument.type';
+import { ArgumentKey } from '../utils/argument-key.type';
+import { DISCORD_TOKEN, RECIPIENTS } from '../utils/argument-keys.consts';
 
 export class ProgramArgumentsLoader {
     private arguments?: string[];
