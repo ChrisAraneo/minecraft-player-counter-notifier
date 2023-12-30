@@ -39,7 +39,10 @@ export class ProgramArgumentsProvider {
 
     private initialize(): void {
         if (!this.arguments) {
-            this.arguments = this.process.argv.slice(2, process.argv.length);
+            const argv = this.process.argv;
+            const length = argv.length;
+
+            this.arguments = argv.slice(2, length);
         }
     }
 
