@@ -1,12 +1,12 @@
-import process from 'node:process';
-import { Argument } from '../utils/argument.type';
 import { ArgumentKey } from '../utils/argument-key.type';
 import { DISCORD_TOKEN, RECIPIENTS } from '../utils/argument-keys.consts';
+import { Argument } from '../utils/argument.type';
+import { Process } from './process.class';
 
 export class ProgramArgumentsProvider {
     private arguments?: string[];
 
-    constructor() {
+    constructor(private process: Process) {
         this.initialize();
     }
 
@@ -35,7 +35,7 @@ export class ProgramArgumentsProvider {
 
     private initialize(): void {
         if (!this.arguments) {
-            this.arguments = process.argv.slice(2, process.argv.length);
+            this.arguments = this.process.argv.slice(2, process.argv.length);
         }
     }
 
