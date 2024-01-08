@@ -2,23 +2,23 @@ import Path from 'path';
 import { Observable, catchError, map } from 'rxjs';
 import { Config } from '../../models/config.type';
 import { JsonFile } from '../../models/json-file.class';
-import { CONFIG_READING_ERROR_MESSAGE, INVALID_CONFIG_ERROR_MESSAGE } from './config-loader.consts';
-import { CurrentDirectoryProvider } from '../current-directory-provider/current-directory-provider.class';
-import { FileSystem } from '../file-system/file-system.class';
+import { CurrentDirectory } from '../current-directory/current-directory.class';
 import { JsonFileReader } from '../file-reader/json-file-reader.class';
+import { FileSystem } from '../file-system/file-system.class';
+import { CONFIG_READING_ERROR_MESSAGE, INVALID_CONFIG_ERROR_MESSAGE } from './config-loader.consts';
 
 export class ConfigLoader {
     private jsonFileReader: JsonFileReader;
 
     constructor(
-        protected currentDirectoryProvider: CurrentDirectoryProvider,
+        protected currentDirectory: CurrentDirectory,
         protected fileSystem: FileSystem,
     ) {
         this.jsonFileReader = new JsonFileReader(fileSystem);
     }
 
     readConfigFile(): Observable<Config> {
-        const currentDirectory = this.currentDirectoryProvider.getCurrentDirectory();
+        const currentDirectory = this.currentDirectory.getCurrentDirectory();
         const path = Path.normalize(`${currentDirectory}/config.json`);
 
         return this.jsonFileReader.readFile(path).pipe(

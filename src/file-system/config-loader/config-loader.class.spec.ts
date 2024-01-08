@@ -1,23 +1,23 @@
 import { firstValueFrom } from 'rxjs';
-import { ConfigLoader } from './config-loader.class';
-import { CONFIG_READING_ERROR_MESSAGE, INVALID_CONFIG_ERROR_MESSAGE } from './config-loader.consts';
-import { CurrentDirectoryProvider } from '../current-directory-provider/current-directory-provider.class';
-import { CurrentDirectoryProviderMock } from '../current-directory-provider/current-directory-provider.mock.class';
+import { CurrentDirectory } from '../current-directory/current-directory.class';
+import { CurrentDirectoryMock } from '../current-directory/current-directory.mock.class';
 import { FileSystem } from '../file-system/file-system.class';
 import { FileSystemMock } from '../file-system/file-system.mock.class';
+import { ConfigLoader } from './config-loader.class';
+import { CONFIG_READING_ERROR_MESSAGE, INVALID_CONFIG_ERROR_MESSAGE } from './config-loader.consts';
 
 let fileSystem: FileSystem;
-let currentDirectoryProvider: CurrentDirectoryProvider;
+let currentDirectory: CurrentDirectory;
 let configLoader: ConfigLoader;
 
 beforeEach(() => {
-    currentDirectoryProvider = new CurrentDirectoryProviderMock();
+    currentDirectory = new CurrentDirectoryMock();
 });
 
 describe('ConfigLoader', () => {
     it('#readConfigFile should return config object when file contains valid config', async () => {
         fileSystem = new FileSystemMock();
-        configLoader = new ConfigLoader(currentDirectoryProvider, fileSystem);
+        configLoader = new ConfigLoader(currentDirectory, fileSystem);
 
         const config = await firstValueFrom(configLoader.readConfigFile());
 
@@ -33,7 +33,7 @@ describe('ConfigLoader', () => {
 
     it('#readConfigFile should throw error when file contains invalid properties or values', async () => {
         fileSystem = new InvalidConfigFileSystemMock();
-        configLoader = new ConfigLoader(currentDirectoryProvider, fileSystem);
+        configLoader = new ConfigLoader(currentDirectory, fileSystem);
 
         try {
             await firstValueFrom(configLoader.readConfigFile());
@@ -44,7 +44,7 @@ describe('ConfigLoader', () => {
 
     it('#readConfigFile should throw error when file is invalid json', async () => {
         fileSystem = new InvalidJsonFileSystemMock();
-        configLoader = new ConfigLoader(currentDirectoryProvider, fileSystem);
+        configLoader = new ConfigLoader(currentDirectory, fileSystem);
 
         try {
             await firstValueFrom(configLoader.readConfigFile());
@@ -55,7 +55,7 @@ describe('ConfigLoader', () => {
 
     it('#readConfigFile should throw error when result of reading file is empty', async () => {
         fileSystem = new EmptyConfigFileSystemMock();
-        configLoader = new ConfigLoader(currentDirectoryProvider, fileSystem);
+        configLoader = new ConfigLoader(currentDirectory, fileSystem);
 
         try {
             await firstValueFrom(configLoader.readConfigFile());

@@ -11,7 +11,7 @@ import {
 import { DiscordApiClient } from './api/discord-api-client.class';
 import { MinecraftServerStatusApiClient } from './api/minecraft-server-status-api-client.class';
 import { ConfigLoader } from './file-system/config-loader/config-loader.class';
-import { CurrentDirectoryProvider } from './file-system/current-directory-provider/current-directory-provider.class';
+import { CurrentDirectory } from './file-system/current-directory/current-directory.class';
 import { FileSystem } from './file-system/file-system/file-system.class';
 import { Config } from './models/config.type';
 import { Player } from './models/player.type';
@@ -26,9 +26,9 @@ import { Logger } from './utils/logger.class';
 (async (): Promise<void> => {
     const process = new Process();
     const programArgumentsProvider = new ProgramArgumentsProvider(process);
-    const currentDirectoryProvider = new CurrentDirectoryProvider();
+    const currentDirectory = new CurrentDirectory();
     const fileSystem = new FileSystem();
-    const configLoader = new ConfigLoader(currentDirectoryProvider, fileSystem);
+    const configLoader = new ConfigLoader(currentDirectory, fileSystem);
     const config: Config | void = await firstValueFrom(configLoader.readConfigFile()).catch(
         (error) => logger.error(error),
     );
