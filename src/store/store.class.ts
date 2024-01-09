@@ -1,5 +1,5 @@
 import diff from 'microdiff';
-import { BehaviorSubject, Observable, filter, map } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { Player } from '../models/player.type';
 import { ServerStatus } from '../models/server-status.type';
 
@@ -12,11 +12,11 @@ export class Store {
         return this.store.asObservable();
     }
 
-    getServerStatus(server: string): Observable<ServerStatus> {
+    getServerStatus(server: string): Observable<ServerStatus | null> {
         return this.store.asObservable().pipe(
             map((statuses) => statuses.filter((item) => item.server === server)),
             map((item) => (Array.isArray(item) ? item[0] : item)),
-            filter((item) => !!item),
+            map((item) => item || null),
         );
     }
 
