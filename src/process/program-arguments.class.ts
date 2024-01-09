@@ -5,9 +5,9 @@ import { Process } from './process.class';
 import {
     INCORRECT_ARGUMENT_KEY_ERROR_MESSAGE,
     INCORRECT_ARGUMENT_VALUE_ERROR_MESSAGE,
-} from './program-arguments-provider.consts';
+} from './program-arguments.consts';
 
-export class ProgramArgumentsProvider {
+export class ProgramArguments {
     private arguments?: string[];
 
     constructor(private process: Process) {

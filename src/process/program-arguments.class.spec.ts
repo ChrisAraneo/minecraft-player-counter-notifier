@@ -1,19 +1,19 @@
 import { DISCORD_TOKEN, RECIPIENTS } from './argument-keys.consts';
 import { Process } from './process.class';
 import { ProcessMock } from './process.mock.class';
-import { ProgramArgumentsProvider } from './program-arguments-provider.class';
+import { ProgramArguments } from './program-arguments.class';
 
 let process: Process;
-let programArgumentsProvider: ProgramArgumentsProvider;
+let programArguments: ProgramArguments;
 
 beforeEach(() => {
     process = new ProcessMock();
-    programArgumentsProvider = new ProgramArgumentsProvider(process);
+    programArguments = new ProgramArguments(process);
 });
 
-describe('ProgramArgumentsProvider', () => {
+describe('ProgramArguments', () => {
     it('#load should return list of arguments when program executed with valid arguments', async () => {
-        const args = programArgumentsProvider.load();
+        const args = programArguments.load();
 
         expect(args).toStrictEqual([
             { key: DISCORD_TOKEN, value: '01234543210' },
