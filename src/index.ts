@@ -1,3 +1,4 @@
+import fetch from 'node-fetch';
 import {
     MonoTypeOperatorFunction,
     Observable,
@@ -59,7 +60,7 @@ import { Logger } from './utils/logger.class';
                   : [predefinedRecipients],
           )
         : null;
-    const apiClient = new MinecraftServerStatusApiClient(config, logger);
+    const apiClient = new MinecraftServerStatusApiClient(config, logger, fetch);
 
     function logNumberOfPlayers(server: string): MonoTypeOperatorFunction<unknown> {
         return tap((number) => logger.info(`Server ${server} has currently: ${number} players.`));

@@ -1,10 +1,10 @@
-import fetch from 'node-fetch';
+import { RequestInfo, RequestInit, Response } from 'node-fetch';
 import { Observable, from, map, of } from 'rxjs';
-import { Cache } from './cache.type';
-import { Player } from '../models/player.type';
-import { StatusResponse } from './status-response.type';
 import { Config } from '../models/config.type';
+import { Player } from '../models/player.type';
 import { Logger } from '../utils/logger.class';
+import { Cache } from './cache.type';
+import { StatusResponse } from './status-response.type';
 
 export class MinecraftServerStatusApiClient {
     private static StatusEndpoint = `https://api.mcsrvstat.us/3`;
@@ -15,6 +15,7 @@ export class MinecraftServerStatusApiClient {
     constructor(
         private config: Config,
         private logger: Logger,
+        private fetch: (url: URL | RequestInfo, init?: RequestInit) => Promise<Response>,
     ) {
         this.CacheTTL = this.config['cache-ttl'];
     }
@@ -56,7 +57,7 @@ export class MinecraftServerStatusApiClient {
 
         this.logger.debug(`GET ${url}`);
 
-        return fetch(url)
+        return this.fetch(url)
             .then((response) => response.json() as unknown as StatusResponse)
             .then((json) => {
                 this.logger.debug(`GET response`, json);
