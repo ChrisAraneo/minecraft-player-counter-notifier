@@ -6,62 +6,64 @@ import { FileSystemMock } from '../file-system/file-system.mock.class';
 import { ConfigLoader } from './config-loader.class';
 import { CONFIG_READING_ERROR_MESSAGE, INVALID_CONFIG_ERROR_MESSAGE } from './config-loader.consts';
 
-let fileSystem: FileSystem;
-let currentDirectory: CurrentDirectory;
-let configLoader: ConfigLoader;
-
-beforeEach(() => {
-    currentDirectory = new CurrentDirectoryMock();
-});
-
 describe('ConfigLoader', () => {
-    it('#readConfigFile should return config object when file contains valid config', async () => {
-        fileSystem = new FileSystemMock();
-        configLoader = new ConfigLoader(currentDirectory, fileSystem);
+    let fileSystem: FileSystem;
+    let currentDirectory: CurrentDirectory;
+    let configLoader: ConfigLoader;
 
-        const config = await firstValueFrom(configLoader.readConfigFile());
+    beforeEach(() => {
+        currentDirectory = new CurrentDirectoryMock();
+    });
 
-        expect(config).toStrictEqual({
-            'cache-ttl': 30000,
-            discord: true,
-            interval: 60000,
-            'log-level': 'debug',
-            recipients: [],
-            servers: ['0.0.0.0'],
+    describe('readConfigFile', () => {
+        it('should return config object when file contains valid config', async () => {
+            fileSystem = new FileSystemMock();
+            configLoader = new ConfigLoader(currentDirectory, fileSystem);
+
+            const config = await firstValueFrom(configLoader.readConfigFile());
+
+            expect(config).toStrictEqual({
+                'cache-ttl': 30000,
+                discord: true,
+                interval: 60000,
+                'log-level': 'debug',
+                recipients: [],
+                servers: ['0.0.0.0'],
+            });
         });
-    });
 
-    it('#readConfigFile should throw error when file contains invalid properties or values', async () => {
-        fileSystem = new InvalidConfigFileSystemMock();
-        configLoader = new ConfigLoader(currentDirectory, fileSystem);
+        it('should throw error when file contains invalid properties or values', async () => {
+            fileSystem = new InvalidConfigFileSystemMock();
+            configLoader = new ConfigLoader(currentDirectory, fileSystem);
 
-        try {
-            await firstValueFrom(configLoader.readConfigFile());
-        } catch (error: any) {
-            expect(error?.message).toBe(INVALID_CONFIG_ERROR_MESSAGE);
-        }
-    });
+            try {
+                await firstValueFrom(configLoader.readConfigFile());
+            } catch (error: any) {
+                expect(error?.message).toBe(INVALID_CONFIG_ERROR_MESSAGE);
+            }
+        });
 
-    it('#readConfigFile should throw error when file is invalid json', async () => {
-        fileSystem = new InvalidJsonFileSystemMock();
-        configLoader = new ConfigLoader(currentDirectory, fileSystem);
+        it('should throw error when file is invalid json', async () => {
+            fileSystem = new InvalidJsonFileSystemMock();
+            configLoader = new ConfigLoader(currentDirectory, fileSystem);
 
-        try {
-            await firstValueFrom(configLoader.readConfigFile());
-        } catch (error: any) {
-            expect(error?.message).toBe(CONFIG_READING_ERROR_MESSAGE);
-        }
-    });
+            try {
+                await firstValueFrom(configLoader.readConfigFile());
+            } catch (error: any) {
+                expect(error?.message).toBe(CONFIG_READING_ERROR_MESSAGE);
+            }
+        });
 
-    it('#readConfigFile should throw error when result of reading file is empty', async () => {
-        fileSystem = new EmptyConfigFileSystemMock();
-        configLoader = new ConfigLoader(currentDirectory, fileSystem);
+        it('should throw error when result of reading file is empty', async () => {
+            fileSystem = new EmptyConfigFileSystemMock();
+            configLoader = new ConfigLoader(currentDirectory, fileSystem);
 
-        try {
-            await firstValueFrom(configLoader.readConfigFile());
-        } catch (error: any) {
-            expect(error?.message).toBe(CONFIG_READING_ERROR_MESSAGE);
-        }
+            try {
+                await firstValueFrom(configLoader.readConfigFile());
+            } catch (error: any) {
+                expect(error?.message).toBe(CONFIG_READING_ERROR_MESSAGE);
+            }
+        });
     });
 });
 
