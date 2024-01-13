@@ -30,7 +30,7 @@ export class Logger {
             level: this.level,
             format: combine(
                 timestamp({
-                    format: 'YYYY-MM-DD HH:MM:SS',
+                    format: 'YYYY-MM-DD HH:mm:SS',
                 }),
                 prettyPrint(),
                 format.splat(),
