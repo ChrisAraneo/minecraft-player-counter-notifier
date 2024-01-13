@@ -1,7 +1,9 @@
 import { Client, Events, Partials } from 'discord.js';
+import { Observable, forkJoin, from } from 'rxjs';
 import { Config } from '../models/config.type';
-import { Logger } from '../utils/logger.class';
 import { Player } from '../models/player.type';
+import { Logger } from '../utils/logger.class';
+import { SendMessageResult } from './send-message-result.type';
 
 export class DiscordApiClient {
     private client: Client;
@@ -21,18 +23,39 @@ export class DiscordApiClient {
         }
     }
 
-    sendMessage(server: string, numberOfPlayers: number, playersList: Player[]): void {
-        this.recipientIds.forEach((id) => {
-            this.client.users.fetch(id).then((user) => {
-                this.logger.info(`Sending message to user ${user.id}`);
+    sendMessage(
+        server: string,
+        numberOfPlayers: number,
+        playersList: Player[],
+    ): Observable<SendMessageResult[]> {
+        return forkJoin(
+            this.recipientIds.map((id) =>
+                from(
+                    new Promise<SendMessageResult>((resolve) => {
+                        this.client.users
+                            .fetch(id)
+                            .then((user) => {
+                                this.logger.info(`Sending message to user ${user.id}`);
 
-                user.send(
-                    `${numberOfPlayers}\t players on server ${server} (${playersList
-                        .map((player) => player.name)
-                        .join(',')})`,
-                );
-            });
-        });
+                                try {
+                                    user.send(
+                                        `${numberOfPlayers}\t players on server ${server} (${playersList
+                                            .map((player) => player.name)
+                                            .join(',')})`,
+                                    );
+                                } catch (error: unknown) {
+                                    resolve({ success: false, error });
+                                }
+
+                                resolve({ success: true });
+                            })
+                            .catch((error: unknown) => {
+                                resolve({ success: false, error });
+                            });
+                    }),
+                ),
+            ),
+        );
     }
 
     private initializeClient(): void {
