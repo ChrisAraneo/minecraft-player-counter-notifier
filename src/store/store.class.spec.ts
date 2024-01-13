@@ -1,6 +1,73 @@
 import { firstValueFrom } from 'rxjs';
 import { Store } from './store.class';
 
+describe('Store', () => {
+    let store: Store;
+
+    beforeEach(() => {
+        store = new Store();
+    });
+
+    describe('getServerStatus', async () => {
+        it('should return null when status was not added before', async () => {
+            const result = await firstValueFrom(store.getServerStatus('2.2.2.2'));
+
+            expect(result).toStrictEqual(null);
+        });
+
+        it('should return status if it was added before', async () => {
+            store.updateServerStatus(dummyStatuses[1]);
+            store.updateServerStatus(dummyStatuses[2]);
+
+            const result = await firstValueFrom(store.getServerStatus('2.2.2.2'));
+
+            expect(result).toStrictEqual(dummyStatuses[2]);
+        });
+
+        it('should return different result when status was upated', async () => {
+            store.updateServerStatus(dummyStatuses[0]);
+
+            store.updateServerStatus({ ...dummyStatuses[0], online: 0, players: [] });
+            const result = await firstValueFrom(store.getServerStatus('0.0.0.0'));
+
+            expect(result).toStrictEqual({ ...dummyStatuses[0], online: 0, players: [] });
+        });
+    });
+
+    describe('getServerStatuses', async () => {
+        it('should return empty array', async () => {
+            const result = await firstValueFrom(store.getServerStatuses());
+
+            expect(result).toStrictEqual([]);
+        });
+
+        it('should return array with three items if they were added before', async () => {
+            store.updateServerStatus(dummyStatuses[0]);
+            store.updateServerStatus(dummyStatuses[1]);
+            store.updateServerStatus(dummyStatuses[2]);
+
+            const result = await firstValueFrom(store.getServerStatuses());
+
+            expect(result).toStrictEqual([dummyStatuses[0], dummyStatuses[1], dummyStatuses[2]]);
+        });
+
+        it('should return different result when status was upated', async () => {
+            store.updateServerStatus(dummyStatuses[0]);
+            store.updateServerStatus(dummyStatuses[1]);
+            store.updateServerStatus(dummyStatuses[2]);
+
+            store.updateServerStatus({ ...dummyStatuses[0], online: 0, players: [] });
+            const result = await firstValueFrom(store.getServerStatuses());
+
+            expect(result).toStrictEqual([
+                { ...dummyStatuses[0], online: 0, players: [] },
+                dummyStatuses[1],
+                dummyStatuses[2],
+            ]);
+        });
+    });
+});
+
 const dummyStatuses = [
     {
         server: '0.0.0.0',
@@ -32,66 +99,3 @@ const dummyStatuses = [
         ],
     },
 ];
-
-let store: Store;
-
-beforeEach(() => {
-    store = new Store();
-});
-
-describe('Store', () => {
-    it('#getServerStatuses should return empty array', async () => {
-        const result = await firstValueFrom(store.getServerStatuses());
-
-        expect(result).toStrictEqual([]);
-    });
-
-    it('#getServerStatuses should return array with three statuses if they were added before', async () => {
-        store.updateServerStatus(dummyStatuses[0]);
-        store.updateServerStatus(dummyStatuses[1]);
-        store.updateServerStatus(dummyStatuses[2]);
-
-        const result = await firstValueFrom(store.getServerStatuses());
-
-        expect(result).toStrictEqual([dummyStatuses[0], dummyStatuses[1], dummyStatuses[2]]);
-    });
-
-    it('#getServerStatuses should return different result when status was upated', async () => {
-        store.updateServerStatus(dummyStatuses[0]);
-        store.updateServerStatus(dummyStatuses[1]);
-        store.updateServerStatus(dummyStatuses[2]);
-
-        store.updateServerStatus({ ...dummyStatuses[0], online: 0, players: [] });
-        const result = await firstValueFrom(store.getServerStatuses());
-
-        expect(result).toStrictEqual([
-            { ...dummyStatuses[0], online: 0, players: [] },
-            dummyStatuses[1],
-            dummyStatuses[2],
-        ]);
-    });
-
-    it('#getServerStatus should return null when status was not added before', async () => {
-        const result = await firstValueFrom(store.getServerStatus('2.2.2.2'));
-
-        expect(result).toStrictEqual(null);
-    });
-
-    it('#getServerStatus should return status if it was added before', async () => {
-        store.updateServerStatus(dummyStatuses[1]);
-        store.updateServerStatus(dummyStatuses[2]);
-
-        const result = await firstValueFrom(store.getServerStatus('2.2.2.2'));
-
-        expect(result).toStrictEqual(dummyStatuses[2]);
-    });
-
-    it('#getServerStatus should return different result when status was upated', async () => {
-        store.updateServerStatus(dummyStatuses[0]);
-
-        store.updateServerStatus({ ...dummyStatuses[0], online: 0, players: [] });
-        const result = await firstValueFrom(store.getServerStatus('0.0.0.0'));
-
-        expect(result).toStrictEqual({ ...dummyStatuses[0], online: 0, players: [] });
-    });
-});

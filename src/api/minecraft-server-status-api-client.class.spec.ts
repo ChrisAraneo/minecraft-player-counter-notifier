@@ -5,17 +5,17 @@ import { MinecraftServerStatusApiClient } from './minecraft-server-status-api-cl
 import { StatusResponse } from './status-response.type';
 import { firstValueFrom } from 'rxjs';
 
-let apiClient: MinecraftServerStatusApiClient;
-
-beforeEach(() => {
-    apiClient = new MinecraftServerStatusApiClient(
-        dummyConfig,
-        new LoggerMock() as unknown as Logger,
-        mockFetch,
-    );
-});
-
 describe('MinecraftServerStatusApiClient', () => {
+    let apiClient: MinecraftServerStatusApiClient;
+
+    beforeEach(() => {
+        apiClient = new MinecraftServerStatusApiClient(
+            dummyConfig,
+            new LoggerMock() as unknown as Logger,
+            mockFetch,
+        );
+    });
+
     describe('getPlayersList', () => {
         it('should return players list', async () => {
             const server = 'example.com';
