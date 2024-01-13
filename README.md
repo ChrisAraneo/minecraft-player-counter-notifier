@@ -1,26 +1,54 @@
-# Minecraft Players Number Notifier (v0.0.1)
+# Minecraft Players Number Notifier (v0.2.0)
 
 ![Minecraft Players Number Notifier logo](logo.png?raw=true)
 
-# Environment variables & config
+## What is it?
 
-If you want notifications to be sent via Discord, you must provide the DISCORD_TOKEN environment variable when starting the script.
+The purpose of this script is to notify Minecraft server admin about the number of players on the server. The current version supports sending direct messages via Discord. The script was created as a solution to the author's personal needs.
 
-Example:
+## Configuration file
 
-`config.json`
+Before running the application fill the values in the `src/config.json` configuration file according to your needs (this file will be copied into `dist/config.json`` on script start).
+
+### Example `config.json`
+
 ```json
 {
-    "cache-ttl": 30000,
-    "discord": true,
+    "servers": ["abc.com", "minikraft.example"],
     "interval": 60000,
-    "servers": ["server.address.here.com"]
+    "discord": true,
+    "log-level": "debug",
+    "cache-ttl": 30000,
+    "recipients": [],
 }
 ```
+
+### Configuration parameters explained
+
+- **`servers` - list of servers you want to track**
+- **`interval` - time between next updates of the number of players (in milliseconds); sixty seconds is usually low enough**
+- **`discord` - `true` means the discord bot will notify you; `false` if you want to disable it** (if you are using discord bot then remember to provide DISCORD_TOKEN argument, more info below)
+- `log-level` - severity of logs do you want to see (you can leave it on debug)
+- `cache-ttl` - time after which the cache expires (should be lower than `interval`)
+- `recipients` - predefined discord recipients (IDs of users); if you want the bot to know recipients of notify messages you can fill this list
+
+* - the most important parameters are bold
+
+## Discord token
+
+If you want notifications to be sent via Discord, **you must provide the DISCORD_TOKEN command line argument when starting the script** and also set the `discord` value in configuration file to be `true`.
 
 ```bash
 npm run start DISCORD_TOKEN=YOURTOKENHERE
 ```
+
+You can get Discord token when you create a Discord bot first (see the next chapter).
+
+## How to use Discord bot?
+
+1. Create a bot instance on [https://discord.com/developers/applications].
+2. Invite bot to your Discord server.
+3. `@mention` bot on server chat - after successful mention bot should send you a hello message and he will notify you from this moment
 
 # License
 

@@ -35,7 +35,7 @@ export class DiscordApiClient {
                         this.client.users
                             .fetch(id)
                             .then((user) => {
-                                this.logger.info(`Sending message to user ${user.id}`);
+                                this.logger.info(`Sending message to user: ${user.id}`);
 
                                 try {
                                     user.send(
