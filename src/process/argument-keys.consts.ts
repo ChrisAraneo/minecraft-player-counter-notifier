@@ -1,0 +1,2 @@
+export const DISCORD_TOKEN = 'DISCORD_TOKEN';
+export const RECIPIENTS = 'RECIPIENTS';
