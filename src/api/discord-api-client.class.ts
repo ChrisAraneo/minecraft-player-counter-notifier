@@ -1,13 +1,15 @@
 import { Client, Events, Partials } from 'discord.js';
-import { Observable, forkJoin, from } from 'rxjs';
+import { BehaviorSubject, Subscription, debounceTime } from 'rxjs';
 import { Config } from '../models/config.type';
 import { Player } from '../models/player.type';
 import { Logger } from '../utils/logger.class';
-import { SendMessageResult } from './send-message-result.type';
+import { DiscordApiMessage } from './discord-api-message.class';
 
 export class DiscordApiClient {
     private client: Client;
     private recipientIds: string[] = [];
+    private messagesToSend = new BehaviorSubject<DiscordApiMessage[]>([]);
+    private subscription = new Subscription();
 
     constructor(
         private config: Config,
@@ -20,52 +22,18 @@ export class DiscordApiClient {
             this.addRecipients(recipientIds);
             this.login();
             this.subscribeToReceivingMessages();
+            this.subscribeToMessagesToSend();
         }
     }
 
-    sendMessage(
-        server: string,
-        numberOfPlayers: number,
-        playersList: Player[],
-    ): Observable<SendMessageResult[]> {
-        return forkJoin(
-            this.recipientIds.map((id) =>
-                from(
-                    new Promise<SendMessageResult>((resolve) => {
-                        this.client.users
-                            .fetch(id)
-                            .then((user) => {
-                                this.logger.info(`Sending message to user: ${user.id}`);
-
-                                if (numberOfPlayers === 0) {
-                                    try {
-                                        user.send(`No players on server ${server}`);
-                                    } catch (error: unknown) {
-                                        resolve({ success: false, error });
-                                    }
-                                } else {
-                                    const manWalkingEmoji = String.fromCodePoint(0x1f6b6);
-
-                                    try {
-                                        user.send(
-                                            `${numberOfPlayers} players ${manWalkingEmoji} on server ${server}: ${playersList
-                                                .map((player) => player.name)
-                                                .join(',')}`,
-                                        );
-                                    } catch (error: unknown) {
-                                        resolve({ success: false, error });
-                                    }
-                                }
-
-                                resolve({ success: true });
-                            })
-                            .catch((error: unknown) => {
-                                resolve({ success: false, error });
-                            });
-                    }),
-                ),
-            ),
-        );
+    sendMessage(server: string, numberOfPlayers: number, playersList: Player[]): void {
+        this.recipientIds.forEach((id) => {
+            this.client.users.fetch(id).then((user) => {
+                this.pushMessageToSend(
+                    new DiscordApiMessage(user.id, server, numberOfPlayers, playersList),
+                );
+            });
+        });
     }
 
     private initializeClient(): void {
@@ -124,5 +92,69 @@ export class DiscordApiClient {
     private addRecipient(id: string): void {
         this.logger.info(`Adding recipient with ID: ${id}`);
         this.recipientIds.push(id);
+    }
+
+    private pushMessageToSend(message: DiscordApiMessage): void {
+        const currentMessages = this.messagesToSend.getValue();
+        const found = currentMessages.find((item) => item.getId() === message.getId());
+
+        if (!found) {
+            this.logger.info(`Adding message to queue: ${message.getId()}`);
+            this.messagesToSend.next([...currentMessages, message]);
+        }
+    }
+
+    private subscribeToMessagesToSend(): void {
+        this.subscription.add(
+            this.messagesToSend
+                .asObservable()
+                .pipe(debounceTime(1000))
+                .subscribe((messages) => {
+                    Promise.all(
+                        messages.map(
+                            (message) =>
+                                new Promise<void>((resolve) => {
+                                    const recipientId = message.getRecipientId();
+
+                                    this.client.users.fetch(recipientId).then((user) => {
+                                        this.logger.info(
+                                            `Sending message ${message.getId()} to user: ${
+                                                user.id
+                                            }`,
+                                        );
+
+                                        user.send(message.getMessage())
+                                            .then(() => {
+                                                this.logger.info(
+                                                    `Message ${message.getId()} successfully sent to user: ${
+                                                        user.id
+                                                    }`,
+                                                );
+
+                                                resolve();
+                                            })
+                                            .catch(() => {
+                                                this.logger.error(
+                                                    `Error while sending message ${message.getId()} to user: ${
+                                                        user.id
+                                                    }`,
+                                                );
+                                                // TODO Error handling
+                                                resolve();
+                                            });
+                                    });
+                                }),
+                        ),
+                    ).then(() => {
+                        this.messagesToSend.next(
+                            this.messagesToSend.getValue().filter((item) => {
+                                return !messages
+                                    .map((message) => message.getId())
+                                    .find((id) => id === item.getId());
+                            }),
+                        );
+                    });
+                }),
+        );
     }
 }

@@ -3,7 +3,6 @@ import {
     MonoTypeOperatorFunction,
     Observable,
     OperatorFunction,
-    first,
     firstValueFrom,
     from,
     interval,
@@ -91,10 +90,7 @@ import { Logger } from './utils/logger.class';
 
     function sendNotifications(status: ServerStatus): void {
         if (discordApiClient) {
-            discordApiClient
-                .sendMessage(status.server, status.online, status.players)
-                .pipe(first())
-                .subscribe();
+            discordApiClient.sendMessage(status.server, status.online, status.players);
         }
     }
 
