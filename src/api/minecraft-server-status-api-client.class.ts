@@ -71,7 +71,7 @@ export class MinecraftServerStatusApiClient {
     }
 
     private isCacheOutdated(cached: Cache | undefined, now: Date): boolean {
-        return !cached?.timestamp || +cached.timestamp + this.CacheTTL > +now;
+        return !cached?.timestamp || +cached.timestamp + this.CacheTTL < +now;
     }
 
     private updateCache(server: string, timestamp: Date, response: StatusResponse): void {
