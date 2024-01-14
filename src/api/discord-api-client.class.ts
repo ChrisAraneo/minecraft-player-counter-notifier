@@ -37,14 +37,24 @@ export class DiscordApiClient {
                             .then((user) => {
                                 this.logger.info(`Sending message to user: ${user.id}`);
 
-                                try {
-                                    user.send(
-                                        `${numberOfPlayers}\t players on server ${server} (${playersList
-                                            .map((player) => player.name)
-                                            .join(',')})`,
-                                    );
-                                } catch (error: unknown) {
-                                    resolve({ success: false, error });
+                                if (numberOfPlayers === 0) {
+                                    try {
+                                        user.send(`No players on server ${server}`);
+                                    } catch (error: unknown) {
+                                        resolve({ success: false, error });
+                                    }
+                                } else {
+                                    const manWalkingEmoji = String.fromCodePoint(0x1f6b6);
+
+                                    try {
+                                        user.send(
+                                            `${numberOfPlayers} players ${manWalkingEmoji} on server ${server}: ${playersList
+                                                .map((player) => player.name)
+                                                .join(',')}`,
+                                        );
+                                    } catch (error: unknown) {
+                                        resolve({ success: false, error });
+                                    }
                                 }
 
                                 resolve({ success: true });
@@ -93,9 +103,13 @@ export class DiscordApiClient {
             }
 
             const name = message.author.globalName;
+            const wavingHandEmoji = String.fromCodePoint(0x1f44b);
+            const thumbsUpEmoji = String.fromCodePoint(0x1f44d);
 
             message.author
-                .send(`Hello ${name}! I will notify you if new players join the MC servers.`)
+                .send(
+                    `Hello ${name} ${wavingHandEmoji}! I will notify you if new players join the MC servers ${thumbsUpEmoji}`,
+                )
                 .then(() => {})
                 .catch((error) => {
                     this.logger.error(`Could not send message to ${name}`, ...error);
