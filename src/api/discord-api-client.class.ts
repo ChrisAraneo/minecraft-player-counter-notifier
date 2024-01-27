@@ -1,4 +1,4 @@
-import { Client, Events, Partials } from 'discord.js';
+import { Client, Events, Partials, User } from 'discord.js';
 import { BehaviorSubject, Subscription, debounceTime } from 'rxjs';
 import { Config } from '../models/config.type';
 import { Player } from '../models/player.type';
@@ -18,6 +18,8 @@ export class DiscordApiClient {
         recipientIds: string[] = [],
     ) {
         if (this.config?.discord) {
+            this.logger.info(`Discord bot is enabled.`);
+
             this.initializeClient();
             this.addRecipients(recipientIds);
             this.login();
@@ -27,17 +29,26 @@ export class DiscordApiClient {
     }
 
     sendMessage(server: string, numberOfPlayers: number, playersList: Player[]): void {
-        this.recipientIds.forEach((id) => {
-            this.client.users.fetch(id).then((user) => {
-                this.pushMessageToSend(
-                    new DiscordApiMessage(user.id, server, numberOfPlayers, playersList),
-                );
-            });
+        this.recipientIds.forEach(async (id) => {
+            let user: User | undefined;
+
+            while (!user) {
+                try {
+                    user = await this.client.users.fetch(id);
+                } catch (error: unknown) {
+                    this.logger.error('Could not fetch user with ID ' + id);
+                    this.login();
+                }
+            }
+
+            this.pushMessageToSend(
+                new DiscordApiMessage(user.id, server, numberOfPlayers, playersList),
+            );
         });
     }
 
     private initializeClient(): void {
-        this.logger.info(`Discord bot is enabled. Initializing...`);
+        this.logger.info(`Initializing client.`);
         this.client = new Client({
             partials: [Partials.User, Partials.Channel, Partials.Reaction],
             intents: ['Guilds', 'GuildMessages'],
@@ -45,7 +56,7 @@ export class DiscordApiClient {
     }
 
     private login(): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             try {
                 this.client.once(Events.ClientReady, (client) => {
                     this.logger.info(`Discord bot is ready. Logged as: ${client.user.tag}`);
@@ -55,6 +66,9 @@ export class DiscordApiClient {
             } catch (error) {
                 reject(error);
             }
+        }).catch(() => {
+            this.logger.error('Could not login. Trying again.');
+            this.login();
         });
     }
 
@@ -81,6 +95,7 @@ export class DiscordApiClient {
                 .then(() => {})
                 .catch((error) => {
                     this.logger.error(`Could not send message to ${name}`, ...error);
+                    this.login();
                 });
         });
     }
@@ -113,36 +128,49 @@ export class DiscordApiClient {
                     Promise.all(
                         messages.map(
                             (message) =>
-                                new Promise<void>((resolve) => {
+                                new Promise<void>(async (resolve) => {
                                     const recipientId = message.getRecipientId();
+                                    let user: User | undefined;
 
-                                    this.client.users.fetch(recipientId).then((user) => {
-                                        this.logger.info(
-                                            `Sending message ${message.getId()} to user: ${
-                                                user.id
-                                            }`,
-                                        );
+                                    while (!user) {
+                                        try {
+                                            user = await this.client.users.fetch(recipientId);
+                                        } catch (error) {
+                                            this.logger.error(
+                                                'Could not fetch user with ID ' + recipientId,
+                                            );
+                                            this.login();
+                                        }
+                                    }
 
-                                        user.send(message.getMessage())
-                                            .then(() => {
-                                                this.logger.info(
-                                                    `Message ${message.getId()} successfully sent to user: ${
-                                                        user.id
-                                                    }`,
-                                                );
+                                    this.logger.info(
+                                        `Sending message ${message.getId()} to user: ${user.id}`,
+                                    );
 
-                                                resolve();
-                                            })
-                                            .catch(() => {
-                                                this.logger.error(
-                                                    `Error while sending message ${message.getId()} to user: ${
-                                                        user.id
-                                                    }`,
-                                                );
-                                                // TODO Error handling
-                                                resolve();
+                                    let isMessageSuccessfullySent = false;
+
+                                    while (!isMessageSuccessfullySent) {
+                                        try {
+                                            await user.send(message.getMessage()).then(() => {
+                                                isMessageSuccessfullySent = true;
                                             });
-                                    });
+                                        } catch (error: unknown) {
+                                            this.logger.error(
+                                                `Error while sending message ${message.getId()} to user: ${
+                                                    user.id
+                                                }. Trying again.`,
+                                            );
+                                            isMessageSuccessfullySent = false;
+                                        }
+                                    }
+
+                                    this.logger.info(
+                                        `Message ${message.getId()} successfully sent to user: ${
+                                            user.id
+                                        }`,
+                                    );
+
+                                    resolve();
                                 }),
                         ),
                     ).then(() => {
