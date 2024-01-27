@@ -1,8 +1,10 @@
 import fetch from 'node-fetch';
 import {
+    EMPTY,
     MonoTypeOperatorFunction,
     Observable,
     OperatorFunction,
+    catchError,
     firstValueFrom,
     from,
     interval,
@@ -110,11 +112,23 @@ import { Logger } from './utils/logger.class';
                     ),
                 );
             }),
+            catchError((error: unknown) => {
+                logger.error(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+
+                return EMPTY;
+            }),
         )
         .subscribe();
 
     store
         .getServerStatuses()
-        .pipe(mergeMap((statuses) => from(statuses)))
+        .pipe(
+            mergeMap((statuses) => from(statuses)),
+            catchError((error: unknown) => {
+                logger.error(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+
+                return EMPTY;
+            }),
+        )
         .subscribe((status) => sendNotifications(status));
 })();
