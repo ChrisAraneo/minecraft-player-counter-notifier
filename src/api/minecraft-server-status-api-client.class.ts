@@ -35,10 +35,22 @@ export class MinecraftServerStatusApiClient {
 
         if (this.isCacheOutdated(cached, now)) {
             return from(
-                this.fetchServerStatus(server).then((response) => {
-                    this.updateCache(server, now, response);
+                new Promise<StatusResponse>(async (resolve) => {
+                    let response: StatusResponse | null;
 
-                    return response;
+                    try {
+                        response = await this.fetchServerStatus(server);
+                    } catch (error: unknown) {
+                        this.logger.error(`Error while fetching server status`);
+                        response = null;
+                    }
+
+                    if (response !== null) {
+                        this.updateCache(server, now, response);
+                        resolve(response);
+                    } else {
+                        resolve(cached.response);
+                    }
                 }),
             );
         } else {
