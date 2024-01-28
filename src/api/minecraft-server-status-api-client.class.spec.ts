@@ -5,6 +5,8 @@ import { MinecraftServerStatusApiClient } from './minecraft-server-status-api-cl
 import { StatusResponse } from './status-response.type';
 import { firstValueFrom } from 'rxjs';
 
+// TODO Add error http tests
+
 describe('MinecraftServerStatusApiClient', () => {
     let apiClient: MinecraftServerStatusApiClient;
 
