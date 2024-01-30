@@ -81,13 +81,13 @@ import { Logger } from './utils/logger.class';
     function logPlayerNames(
         getListOfPlayerNames: Observable<PlayersListResult>,
         server: string,
-    ): OperatorFunction<number, Player[]> {
-        return mergeMap((online: number) =>
+    ): OperatorFunction<NumberOfOnlinePlayersResult, Player[]> {
+        return mergeMap((onlineResult: NumberOfOnlinePlayersResult) =>
             getListOfPlayerNames.pipe(
-                tap((result) => {
-                    if (result.success && result?.players?.length > 0) {
+                tap((playersResult) => {
+                    if (playersResult.success && playersResult?.players?.length > 0) {
                         logger.info(
-                            `Players online: ${result.players
+                            `Players online: ${playersResult.players
                                 .map((player) => player.name)
                                 .join(', ')}`,
                         );
@@ -96,7 +96,11 @@ import { Logger } from './utils/logger.class';
                     }
                 }),
                 tap((result: PlayersListResult) => {
-                    store.updateServerStatus({ server, online, players: get(result, 'players') });
+                    store.updateServerStatus({
+                        server,
+                        online: get(onlineResult, 'online', 0),
+                        players: get(result, 'players', []),
+                    });
                 }),
                 map((result) => result?.players || []),
             ),
