@@ -1,3 +1,4 @@
+import { get, isNumber } from 'lodash';
 import fetch from 'node-fetch';
 import {
     EMPTY,
@@ -8,11 +9,14 @@ import {
     firstValueFrom,
     from,
     interval,
+    map,
     mergeMap,
     tap,
 } from 'rxjs';
 import { DiscordApiClient } from './api/discord-api-client.class';
 import { MinecraftServerStatusApiClient } from './api/minecraft-server-status-api-client.class';
+import { NumberOfOnlinePlayersResult } from './api/number-of-online-players-result.type';
+import { PlayersListResult } from './api/players-list-result.type';
 import { ConfigLoader } from './file-system/config-loader/config-loader.class';
 import { CurrentDirectory } from './file-system/current-directory/current-directory.class';
 import { FileSystem } from './file-system/file-system/file-system.class';
@@ -65,27 +69,36 @@ import { Logger } from './utils/logger.class';
     const apiClient = new MinecraftServerStatusApiClient(config, logger, fetch);
 
     function logNumberOfPlayers(server: string): MonoTypeOperatorFunction<unknown> {
-        return tap((number) => logger.info(`Server ${server} has currently: ${number} players.`));
+        return tap((result: NumberOfOnlinePlayersResult) => {
+            if (isNumber(result?.online)) {
+                logger.info(`Server ${server} has currently: ${result?.online} players.`);
+            } else {
+                logger.info(`Could not read number of players on server ${server}.`);
+            }
+        });
     }
 
     function logPlayerNames(
-        getListOfPlayerNames: Observable<Player[]>,
+        getListOfPlayerNames: Observable<PlayersListResult>,
         server: string,
     ): OperatorFunction<number, Player[]> {
         return mergeMap((online: number) =>
             getListOfPlayerNames.pipe(
-                tap((players) => {
-                    if (players.length > 0) {
+                tap((result) => {
+                    if (result.success && result?.players?.length > 0) {
                         logger.info(
-                            `Players online: ${players.map((player) => player.name).join(', ')}`,
+                            `Players online: ${result.players
+                                .map((player) => player.name)
+                                .join(', ')}`,
                         );
                     } else {
                         logger.warn(`Can't list names of online players on ${server}.`);
                     }
                 }),
-                tap((players: Player[]) => {
-                    store.updateServerStatus({ server, online, players });
+                tap((result: PlayersListResult) => {
+                    store.updateServerStatus({ server, online, players: get(result, 'players') });
                 }),
+                map((result) => result?.players || []),
             ),
         );
     }
