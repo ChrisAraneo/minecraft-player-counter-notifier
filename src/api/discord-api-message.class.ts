@@ -8,8 +8,8 @@ export class DiscordApiMessage {
     constructor(
         private recipientId: string,
         private server: string,
-        private numberOfPlayers: number,
-        private playersList: Player[],
+        private numberOfPlayers: number = 0,
+        private playersList: Player[] = [],
     ) {
         this.initializeId();
         this.initializeMessage();
