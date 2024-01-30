@@ -15,7 +15,7 @@ export type StatusResponse = {
         cachetime: number;
         cacheexpire: number;
         apiversion: number;
-        dns: {
+        dns?: {
             srv: any[];
             srv_a: any[];
         };
