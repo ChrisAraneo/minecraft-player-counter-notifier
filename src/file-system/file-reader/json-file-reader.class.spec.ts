@@ -14,7 +14,7 @@ describe('JsonFileReader', () => {
         reader = new JsonFileReader(fileSystem);
     });
 
-    describe('readFile', async () => {
+    describe('readFile', () => {
         it('should read text file', async () => {
             jest.spyOn(fileSystem, 'readFile');
 
@@ -43,7 +43,7 @@ describe('JsonFileReader', () => {
         });
     });
 
-    describe('readFiles', async () => {
+    describe('readFiles', () => {
         it('should read multiple text files', async () => {
             jest.spyOn(fileSystem, 'readFile');
 

@@ -24,7 +24,7 @@ describe('MinecraftServerStatusApiClient', () => {
 
             const result = await firstValueFrom(apiClient.getPlayersList(server));
 
-            expect(result).toEqual(dummyResponse.players.list);
+            expect(result).toEqual({ success: true, players: dummyResponse.players.list });
         });
     });
 
@@ -32,7 +32,7 @@ describe('MinecraftServerStatusApiClient', () => {
         it('should return number of online players', async () => {
             const result = await firstValueFrom(apiClient.getNumberOfOnlinePlayers('example.com'));
 
-            expect(result).toEqual(3);
+            expect(result).toEqual({ success: true, online: 3 });
         });
     });
 });

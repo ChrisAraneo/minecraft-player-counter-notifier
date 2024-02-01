@@ -1,7 +1,7 @@
 import { JsonFile } from './json-file.class';
 
 describe('JsonFile', () => {
-    describe('Instance', async () => {
+    describe('Instance', () => {
         it('should be created', async () => {
             const file = new JsonFile('test.json', { name: 'Tommy' }, new Date('2023-11-10'));
 
@@ -9,7 +9,7 @@ describe('JsonFile', () => {
         });
     });
 
-    describe('getPath', async () => {
+    describe('getPath', () => {
         it('should return correct path', async () => {
             const file = new JsonFile('test.json', { name: 'Tommy' }, new Date('2023-11-10'));
             const path = file.getPath();
@@ -18,7 +18,7 @@ describe('JsonFile', () => {
         });
     });
 
-    describe('getFilename', async () => {
+    describe('getFilename', () => {
         it('should return correct filename', async () => {
             const file = new JsonFile('test.name.json', { name: 'Tommy' }, new Date('2023-11-10'));
             const path = file.getFilename();
@@ -27,7 +27,7 @@ describe('JsonFile', () => {
         });
     });
 
-    describe('setFilename', async () => {
+    describe('setFilename', () => {
         it('should change filename', async () => {
             const file = new JsonFile('test.name.json', { name: 'Tommy' }, new Date('2023-11-13'));
             const filename = file.getFilename();
@@ -39,7 +39,7 @@ describe('JsonFile', () => {
         });
     });
 
-    describe('getExtension', async () => {
+    describe('getExtension', () => {
         it('should return correct extension', async () => {
             const file = new JsonFile('test.json', { name: 'Tommy' }, new Date('2023-11-10'));
             const extension = file.getExtension();
@@ -48,7 +48,7 @@ describe('JsonFile', () => {
         });
     });
 
-    describe('getContent', async () => {
+    describe('getContent', () => {
         it('should return correct file content', async () => {
             const file = new JsonFile('test.json', { name: 'Tommy' }, new Date('2023-11-10'));
             const content = file.getContent();
@@ -57,7 +57,7 @@ describe('JsonFile', () => {
         });
     });
 
-    describe('getModifiedDate', async () => {
+    describe('getModifiedDate', () => {
         it('should return correct date', async () => {
             const file = new JsonFile('test.json', { name: 'Tommy' }, new Date('2023-11-10'));
             const date = file.getModifiedDate();
