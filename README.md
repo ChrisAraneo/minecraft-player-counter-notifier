@@ -38,17 +38,19 @@ Before running the application fill the values in the `src/config.json` configur
 
 If you want notifications to be sent via Discord, **you must provide the DISCORD_TOKEN command line argument when starting the script** and also set the `discord` value in configuration file to be `true`.
 
-```bash
-npm run start DISCORD_TOKEN=YOURTOKENHERE
-```
-
 You can get Discord token when you create a Discord bot first (see the next chapter).
 
 ## How to use Discord bot?
 
 1. Create a bot instance on [https://discord.com/developers/applications].
 2. Invite bot to your Discord server.
-3. `@mention` bot on server chat - after successful mention bot should send you a hello message and he will notify you from this moment
+3. `@mention` bot on server chat - after successful mention bot should send you a hello message and he will notify you from this moment.
+
+## Running the script
+
+```bash
+npm run start DISCORD_TOKEN=YOURTOKENHERE
+```
 
 # License
 
