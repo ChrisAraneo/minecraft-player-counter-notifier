@@ -5,21 +5,17 @@ import { MinecraftServerStatusApiClient } from './minecraft-server-status-api-cl
 import { StatusResponse } from './status-response.type';
 import { firstValueFrom } from 'rxjs';
 
-// TODO Add error http tests
-
 describe('MinecraftServerStatusApiClient', () => {
     let apiClient: MinecraftServerStatusApiClient;
+    let logger: Logger;
 
     beforeEach(() => {
-        apiClient = new MinecraftServerStatusApiClient(
-            dummyConfig,
-            new LoggerMock() as unknown as Logger,
-            mockFetch,
-        );
+        logger = new LoggerMock() as unknown as Logger;
     });
 
     describe('getPlayersList', () => {
         it('should return players list', async () => {
+            apiClient = new MinecraftServerStatusApiClient(config, logger, mockSuccessFetch);
             const server = 'example.com';
 
             const result = await firstValueFrom(apiClient.getPlayersList(server));
@@ -30,6 +26,7 @@ describe('MinecraftServerStatusApiClient', () => {
 
     describe('getNumberOfOnlinePlayers', () => {
         it('should return number of online players', async () => {
+            apiClient = new MinecraftServerStatusApiClient(config, logger, mockSuccessFetch);
             const result = await firstValueFrom(apiClient.getNumberOfOnlinePlayers('example.com'));
 
             expect(result).toEqual({ success: true, online: 3 });
@@ -41,7 +38,7 @@ class LoggerMock {
     debug(): void {}
 }
 
-const dummyConfig: Config = {
+const config: Config = {
     'cache-ttl': 300,
     'log-level': '',
     servers: [],
@@ -109,7 +106,8 @@ const dummyResponse: StatusResponse = {
     eula_blocked: false,
 };
 
-const mockFetch = (() =>
+const mockSuccessFetch = (() =>
     Promise.resolve({
         json: () => Promise.resolve(dummyResponse),
     })) as unknown as (url: URL | RequestInfo, init?: RequestInit) => Promise<Response>;
+
