@@ -14,28 +14,49 @@ describe('MinecraftServerStatusApiClient', () => {
     });
 
     describe('getPlayersList', () => {
-        it('should return players list', async () => {
+        it('should return successful response with players list', async () => {
             apiClient = new MinecraftServerStatusApiClient(config, logger, mockSuccessFetch);
-            const server = 'example.com';
+            MinecraftServerStatusApiClient.clearCache();
 
-            const result = await firstValueFrom(apiClient.getPlayersList(server));
+            const result = await firstValueFrom(apiClient.getPlayersList('example.com'));
 
             expect(result).toEqual({ success: true, players: dummyResponse.players.list });
+        });
+
+        it('should return unsuccessful response', async () => {
+            apiClient = new MinecraftServerStatusApiClient(config, logger, mockErrorFetch);
+            MinecraftServerStatusApiClient.clearCache();
+
+            const result = await firstValueFrom(apiClient.getPlayersList('example.com'));
+
+            expect(result).toEqual({ success: false });
         });
     });
 
     describe('getNumberOfOnlinePlayers', () => {
-        it('should return number of online players', async () => {
+        it('should return successful response with number of online players', async () => {
             apiClient = new MinecraftServerStatusApiClient(config, logger, mockSuccessFetch);
+            MinecraftServerStatusApiClient.clearCache();
+
             const result = await firstValueFrom(apiClient.getNumberOfOnlinePlayers('example.com'));
 
             expect(result).toEqual({ success: true, online: 3 });
+        });
+
+        it('should return unsuccessful response', async () => {
+            apiClient = new MinecraftServerStatusApiClient(config, logger, mockErrorFetch);
+            MinecraftServerStatusApiClient.clearCache();
+
+            const result = await firstValueFrom(apiClient.getNumberOfOnlinePlayers('example.com'));
+
+            expect(result).toEqual({ success: false });
         });
     });
 });
 
 class LoggerMock {
     debug(): void {}
+    error(): void {}
 }
 
 const config: Config = {
@@ -111,3 +132,6 @@ const mockSuccessFetch = (() =>
         json: () => Promise.resolve(dummyResponse),
     })) as unknown as (url: URL | RequestInfo, init?: RequestInit) => Promise<Response>;
 
+const mockErrorFetch = ((): Promise<any> => {
+    throw Error('Error');
+}) as unknown as (url: URL | RequestInfo, init?: RequestInit) => Promise<Response>;
