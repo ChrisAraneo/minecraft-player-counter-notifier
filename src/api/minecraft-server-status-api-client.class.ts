@@ -22,6 +22,10 @@ export class MinecraftServerStatusApiClient {
         this.CacheTTL = this.config['cache-ttl'];
     }
 
+    static clearCache(): void {
+        MinecraftServerStatusApiClient.Cache = new Map<string, Cache>();
+    }
+
     getPlayersList(server: string, now: Date = new Date()): Observable<PlayersListResult> {
         return this.getServerStatus(server, now).pipe(
             map((response) => {
@@ -74,12 +78,8 @@ export class MinecraftServerStatusApiClient {
                         response = null;
                     }
 
-                    if (response !== null) {
-                        this.updateCache(server, now, response);
-                        resolve(response);
-                    } else {
-                        resolve(cached?.response || null);
-                    }
+                    this.updateCache(server, now, response);
+                    resolve(response);
                 }),
             );
         } else {
