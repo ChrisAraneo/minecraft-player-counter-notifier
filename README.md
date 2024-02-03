@@ -52,6 +52,19 @@ You can get Discord token when you create a Discord bot first (see the next chap
 npm run start DISCORD_TOKEN=YOURTOKENHERE
 ```
 
+## Running with PM2
+
+[What is PM?](https://github.com/Unitech/pm2)
+
+```bash
+# Install PM2 globally
+npm install pm2 -g
+```
+
+```bash
+pm2 start .\\dist\\mpnn.js -f --node-args="DISCORD_TOKEN=YOURTOKENHERE"
+```
+
 # License
 
 Project is [MIT licensed](LICENSE).
