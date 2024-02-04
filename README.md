@@ -32,7 +32,7 @@ Before running the application fill the values in the `src/config.json` configur
 - `cache-ttl` - time after which the cache expires (should be lower than `interval`)
 - `recipients` - predefined discord recipients (IDs of users); if you want the bot to know recipients of notify messages you can fill this list
 
-* - the most important parameters are bold
+Note: the most important parameters are bold
 
 ## Discord token
 
@@ -54,7 +54,7 @@ npm run start DISCORD_TOKEN=YOURTOKENHERE
 
 ## Running with PM2
 
-[What is PM?](https://github.com/Unitech/pm2)
+[What is PM2?](https://github.com/Unitech/pm2)
 
 ```bash
 # Install PM2 globally
