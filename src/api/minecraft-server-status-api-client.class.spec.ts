@@ -7,39 +7,59 @@ import { firstValueFrom } from 'rxjs';
 
 describe('MinecraftServerStatusApiClient', () => {
     let apiClient: MinecraftServerStatusApiClient;
+    let logger: Logger;
 
     beforeEach(() => {
-        apiClient = new MinecraftServerStatusApiClient(
-            dummyConfig,
-            new LoggerMock() as unknown as Logger,
-            mockFetch,
-        );
+        logger = new LoggerMock() as unknown as Logger;
     });
 
     describe('getPlayersList', () => {
-        it('should return players list', async () => {
-            const server = 'example.com';
+        it('should return successful response with players list', async () => {
+            apiClient = new MinecraftServerStatusApiClient(config, logger, mockSuccessFetch);
+            MinecraftServerStatusApiClient.clearCache();
 
-            const result = await firstValueFrom(apiClient.getPlayersList(server));
+            const result = await firstValueFrom(apiClient.getPlayersList('example.com'));
 
-            expect(result).toEqual(dummyResponse.players.list);
+            expect(result).toEqual({ success: true, players: dummyResponse.players.list });
+        });
+
+        it('should return unsuccessful response', async () => {
+            apiClient = new MinecraftServerStatusApiClient(config, logger, mockErrorFetch);
+            MinecraftServerStatusApiClient.clearCache();
+
+            const result = await firstValueFrom(apiClient.getPlayersList('example.com'));
+
+            expect(result).toEqual({ success: false });
         });
     });
 
     describe('getNumberOfOnlinePlayers', () => {
-        it('should return number of online players', async () => {
+        it('should return successful response with number of online players', async () => {
+            apiClient = new MinecraftServerStatusApiClient(config, logger, mockSuccessFetch);
+            MinecraftServerStatusApiClient.clearCache();
+
             const result = await firstValueFrom(apiClient.getNumberOfOnlinePlayers('example.com'));
 
-            expect(result).toEqual(3);
+            expect(result).toEqual({ success: true, online: 3 });
+        });
+
+        it('should return unsuccessful response', async () => {
+            apiClient = new MinecraftServerStatusApiClient(config, logger, mockErrorFetch);
+            MinecraftServerStatusApiClient.clearCache();
+
+            const result = await firstValueFrom(apiClient.getNumberOfOnlinePlayers('example.com'));
+
+            expect(result).toEqual({ success: false });
         });
     });
 });
 
 class LoggerMock {
     debug(): void {}
+    error(): void {}
 }
 
-const dummyConfig: Config = {
+const config: Config = {
     'cache-ttl': 300,
     'log-level': '',
     servers: [],
@@ -107,7 +127,11 @@ const dummyResponse: StatusResponse = {
     eula_blocked: false,
 };
 
-const mockFetch = (() =>
+const mockSuccessFetch = (() =>
     Promise.resolve({
         json: () => Promise.resolve(dummyResponse),
     })) as unknown as (url: URL | RequestInfo, init?: RequestInit) => Promise<Response>;
+
+const mockErrorFetch = ((): Promise<any> => {
+    throw Error('Error');
+}) as unknown as (url: URL | RequestInfo, init?: RequestInit) => Promise<Response>;

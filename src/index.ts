@@ -1,17 +1,22 @@
+import { get, isNumber } from 'lodash';
 import fetch from 'node-fetch';
 import {
+    EMPTY,
     MonoTypeOperatorFunction,
     Observable,
     OperatorFunction,
-    first,
+    catchError,
     firstValueFrom,
     from,
     interval,
+    map,
     mergeMap,
     tap,
 } from 'rxjs';
 import { DiscordApiClient } from './api/discord-api-client.class';
 import { MinecraftServerStatusApiClient } from './api/minecraft-server-status-api-client.class';
+import { NumberOfOnlinePlayersResult } from './api/number-of-online-players-result.type';
+import { PlayersListResult } from './api/players-list-result.type';
 import { ConfigLoader } from './file-system/config-loader/config-loader.class';
 import { CurrentDirectory } from './file-system/current-directory/current-directory.class';
 import { FileSystem } from './file-system/file-system/file-system.class';
@@ -42,7 +47,7 @@ import { Logger } from './utils/logger.class';
 
     const logger: Logger = new Logger(config?.['log-level'] as LogLevel);
 
-    logger.info('Minecraft Players Number Notifier v0.2.0');
+    logger.info('Minecraft Players Number Notifier v0.3.0');
     logger.info(`Program arguments: ${JSON.stringify(process.argv)}`);
 
     const args = programArguments.load();
@@ -64,37 +69,47 @@ import { Logger } from './utils/logger.class';
     const apiClient = new MinecraftServerStatusApiClient(config, logger, fetch);
 
     function logNumberOfPlayers(server: string): MonoTypeOperatorFunction<unknown> {
-        return tap((number) => logger.info(`Server ${server} has currently: ${number} players.`));
+        return tap((result: NumberOfOnlinePlayersResult) => {
+            if (isNumber(result?.online)) {
+                logger.info(`Server ${server} has currently: ${result?.online} players.`);
+            } else {
+                logger.info(`Could not read number of players on server ${server}.`);
+            }
+        });
     }
 
     function logPlayerNames(
-        getListOfPlayerNames: Observable<Player[]>,
+        getListOfPlayerNames: Observable<PlayersListResult>,
         server: string,
-    ): OperatorFunction<number, Player[]> {
-        return mergeMap((online: number) =>
+    ): OperatorFunction<NumberOfOnlinePlayersResult, Player[]> {
+        return mergeMap((onlineResult: NumberOfOnlinePlayersResult) =>
             getListOfPlayerNames.pipe(
-                tap((players) => {
-                    if (players.length > 0) {
+                tap((playersResult) => {
+                    if (playersResult.success && playersResult?.players?.length > 0) {
                         logger.info(
-                            `Players online: ${players.map((player) => player.name).join(', ')}`,
+                            `Players online: ${playersResult.players
+                                .map((player) => player.name)
+                                .join(', ')}`,
                         );
                     } else {
                         logger.warn(`Can't list names of online players on ${server}.`);
                     }
                 }),
-                tap((players: Player[]) => {
-                    store.updateServerStatus({ server, online, players });
+                tap((result: PlayersListResult) => {
+                    store.updateServerStatus({
+                        server,
+                        online: get(onlineResult, 'online', 0),
+                        players: get(result, 'players', []),
+                    });
                 }),
+                map((result) => result?.players || []),
             ),
         );
     }
 
     function sendNotifications(status: ServerStatus): void {
         if (discordApiClient) {
-            discordApiClient
-                .sendMessage(status.server, status.online, status.players)
-                .pipe(first())
-                .subscribe();
+            discordApiClient.sendMessage(status.server, status.online, status.players);
         }
     }
 
@@ -114,11 +129,23 @@ import { Logger } from './utils/logger.class';
                     ),
                 );
             }),
+            catchError((error: unknown) => {
+                logger.error(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+
+                return EMPTY;
+            }),
         )
         .subscribe();
 
     store
         .getServerStatuses()
-        .pipe(mergeMap((statuses) => from(statuses)))
+        .pipe(
+            mergeMap((statuses) => from(statuses)),
+            catchError((error: unknown) => {
+                logger.error(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+
+                return EMPTY;
+            }),
+        )
         .subscribe((status) => sendNotifications(status));
 })();

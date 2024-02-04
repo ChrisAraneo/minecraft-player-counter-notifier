@@ -12,7 +12,7 @@ describe('ProgramArguments', () => {
         programArguments = new ProgramArguments(process);
     });
 
-    describe('load', async () => {
+    describe('load', () => {
         it('should return list of arguments when program executed with valid arguments', async () => {
             const args = programArguments.load();
 

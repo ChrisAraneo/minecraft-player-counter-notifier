@@ -8,7 +8,7 @@ describe('Store', () => {
         store = new Store();
     });
 
-    describe('getServerStatus', async () => {
+    describe('getServerStatus', () => {
         it('should return null when status was not added before', async () => {
             const result = await firstValueFrom(store.getServerStatus('2.2.2.2'));
 
@@ -34,7 +34,7 @@ describe('Store', () => {
         });
     });
 
-    describe('getServerStatuses', async () => {
+    describe('getServerStatuses', () => {
         it('should return empty array', async () => {
             const result = await firstValueFrom(store.getServerStatuses());
 

@@ -1,9 +1,11 @@
+import { get, isArray, isNumber } from 'lodash';
 import { RequestInfo, RequestInit, Response } from 'node-fetch';
 import { Observable, from, map, of } from 'rxjs';
 import { Config } from '../models/config.type';
-import { Player } from '../models/player.type';
 import { Logger } from '../utils/logger.class';
 import { Cache } from './cache.type';
+import { NumberOfOnlinePlayersResult } from './number-of-online-players-result.type';
+import { PlayersListResult } from './players-list-result.type';
 import { StatusResponse } from './status-response.type';
 
 export class MinecraftServerStatusApiClient {
@@ -20,25 +22,64 @@ export class MinecraftServerStatusApiClient {
         this.CacheTTL = this.config['cache-ttl'];
     }
 
-    getPlayersList(server: string, now: Date = new Date()): Observable<Player[]> {
+    static clearCache(): void {
+        MinecraftServerStatusApiClient.Cache = new Map<string, Cache>();
+    }
+
+    getPlayersList(server: string, now: Date = new Date()): Observable<PlayersListResult> {
         return this.getServerStatus(server, now).pipe(
-            map((response) => response.players.list || []),
+            map((response) => {
+                if (isArray(get(response, 'players.list'))) {
+                    return {
+                        success: true,
+                        players: response.players.list,
+                    };
+                } else {
+                    return {
+                        success: false,
+                    };
+                }
+            }),
         );
     }
 
-    getNumberOfOnlinePlayers(server: string, now: Date = new Date()): Observable<number> {
-        return this.getServerStatus(server, now).pipe(map((response) => response.players.online));
+    getNumberOfOnlinePlayers(
+        server: string,
+        now: Date = new Date(),
+    ): Observable<NumberOfOnlinePlayersResult> {
+        return this.getServerStatus(server, now).pipe(
+            map((response) => {
+                if (isNumber(get(response, 'players.online'))) {
+                    return {
+                        success: true,
+                        online: response.players.online,
+                    };
+                } else {
+                    return {
+                        success: false,
+                    };
+                }
+            }),
+        );
     }
 
-    private getServerStatus(server: string, now: Date): Observable<StatusResponse> {
+    private getServerStatus(server: string, now: Date): Observable<StatusResponse | null> {
         const cached = this.getCache(server);
 
         if (this.isCacheOutdated(cached, now)) {
             return from(
-                this.fetchServerStatus(server).then((response) => {
-                    this.updateCache(server, now, response);
+                new Promise<StatusResponse>(async (resolve) => {
+                    let response: StatusResponse | null;
 
-                    return response;
+                    try {
+                        response = await this.fetchServerStatus(server);
+                    } catch (error: unknown) {
+                        this.logger.error(`Error while fetching server status`);
+                        response = null;
+                    }
+
+                    this.updateCache(server, now, response);
+                    resolve(response);
                 }),
             );
         } else {
@@ -48,7 +89,7 @@ export class MinecraftServerStatusApiClient {
                 }`,
             );
 
-            return of(cached?.response);
+            return of(cached?.response || null);
         }
     }
 
