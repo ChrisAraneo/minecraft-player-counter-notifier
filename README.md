@@ -1,4 +1,4 @@
-# Minecraft Players Number Notifier (v0.2.0)
+# Minecraft Players Number Notifier (v0.3.0)
 
 ![Minecraft Players Number Notifier logo](logo.png?raw=true)
 
