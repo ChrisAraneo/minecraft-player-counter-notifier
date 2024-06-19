@@ -42,9 +42,11 @@ export class DiscordApiMessage {
         } else {
             const manWalkingEmoji = String.fromCodePoint(0x1f6b6);
 
-            this.message = `${this.numberOfPlayers} players ${manWalkingEmoji} on server ${
-                this.server
-            }: ${this.playersList.map((player) => player.name).join(', ')}`;
+            this.message = `${this.numberOfPlayers} player${
+                this.numberOfPlayers === 1 ? '' : 's'
+            } ${manWalkingEmoji} on server ${this.server}: ${this.playersList
+                .map((player) => player.name)
+                .join(', ')}`;
         }
     }
 }
