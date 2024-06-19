@@ -8,7 +8,7 @@ The purpose of this script is to notify Minecraft server admin about the number 
 
 ## Configuration file
 
-Before running the application fill the values in the `src/config.json` configuration file according to your needs (this file will be copied into `dist/config.json`` on script start).
+Before running the application fill the values in the `src/config.json` configuration file (this file will be copied into `dist/config.json`` on script start).
 
 ### Example `config.json`
 
@@ -36,7 +36,7 @@ Note: the most important parameters are bold
 
 ## Discord token
 
-If you want notifications to be sent via Discord, **you must provide the DISCORD_TOKEN command line argument when starting the script** and also set the `discord` value in configuration file to be `true`.
+If you want notifications to be sent via Discord, **you must provide the `DISCORD_TOKEN` command line argument when starting the script** and also set the `discord` value in configuration file to be `true`.
 
 You can get Discord token when you create a Discord bot first (see the next chapter).
 
@@ -56,7 +56,7 @@ npm install
 npm run start DISCORD_TOKEN=YOURTOKENHERE
 ```
 
-## Running with Docker
+## Running script with Docker
 
 ```bash
 # Build image
