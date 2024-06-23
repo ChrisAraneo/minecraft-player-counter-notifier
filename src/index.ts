@@ -48,7 +48,7 @@ import { Logger } from './utils/logger.class';
 
     const logger: Logger = new Logger(config?.['log-level'] as LogLevel);
 
-    logger.info('Minecraft Players Number Notifier v0.3.0');
+    logger.info('Minecraft Players Number Notifier v0.4.0');
     logger.info(`Program arguments: ${JSON.stringify(process.argv)}`);
 
     const args = programArguments.load();
