@@ -20,6 +20,7 @@ import { PlayersListResult } from './api/players-list-result.type';
 import { ConfigLoader } from './file-system/config-loader/config-loader.class';
 import { CurrentDirectory } from './file-system/current-directory/current-directory.class';
 import { FileSystem } from './file-system/file-system/file-system.class';
+import { HealthCheck } from './health-check/health-check.class';
 import { Config } from './models/config.type';
 import { Player } from './models/player.type';
 import { ServerStatus } from './models/server-status.type';
@@ -67,6 +68,9 @@ import { Logger } from './utils/logger.class';
           )
         : null;
     const apiClient = new MinecraftServerStatusApiClient(config, logger, fetch);
+
+    const healthCheck = new HealthCheck('/health', 9339, process, logger);
+    healthCheck.listen();
 
     function logNumberOfPlayers(server: string): MonoTypeOperatorFunction<unknown> {
         return tap((result: NumberOfOnlinePlayersResult) => {
