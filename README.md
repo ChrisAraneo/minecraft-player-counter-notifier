@@ -27,7 +27,7 @@ Before running the application fill the values in the `src/config.json` configur
 
 - **`servers` - list of servers you want to track**
 - **`interval` - time between next updates of the number of players (in milliseconds); sixty seconds is usually low enough**
-- **`discord` - `true` means the discord bot will notify you; `false` if you want to disable it** (if you are using discord bot then remember to provide DISCORD_TOKEN argument, more info below)
+- **`discord` - `true` means the discord bot will notify you; `false` if you want to disable it** (if you are using discord bot then remember to provide `DISCORD_TOKEN` argument, more info below)
 - `log-level` - severity of logs do you want to see (you can leave it on debug)
 - `cache-ttl` - time after which the cache expires (should be lower than `interval`)
 - `recipients` - predefined discord recipients (IDs of users); if you want the bot to know recipients of notify messages you can fill this list
