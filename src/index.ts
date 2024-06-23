@@ -70,10 +70,12 @@ import { Logger } from './utils/logger.class';
 
     function logNumberOfPlayers(server: string): MonoTypeOperatorFunction<unknown> {
         return tap((result: NumberOfOnlinePlayersResult) => {
-            if (isNumber(result?.online)) {
-                logger.info(`Server ${server} has currently: ${result?.online} players.`);
-            } else {
+            if (!isNumber(result?.online)) {
                 logger.info(`Could not read number of players on server ${server}.`);
+            } else if (result.online === 1) {
+                logger.info(`Server ${server} has currently: ${result?.online} player.`);
+            } else {
+                logger.info(`Server ${server} has currently: ${result?.online} players.`);
             }
         });
     }

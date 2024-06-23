@@ -8,7 +8,7 @@ The purpose of this script is to notify Minecraft server admin about the number 
 
 ## Configuration file
 
-Before running the application fill the values in the `src/config.json` configuration file according to your needs (this file will be copied into `dist/config.json`` on script start).
+Before running the application fill the values in the `src/config.json` configuration file (this file will be copied into `dist/config.json`` on script start).
 
 ### Example `config.json`
 
@@ -36,7 +36,7 @@ Note: the most important parameters are bold
 
 ## Discord token
 
-If you want notifications to be sent via Discord, **you must provide the DISCORD_TOKEN command line argument when starting the script** and also set the `discord` value in configuration file to be `true`.
+If you want notifications to be sent via Discord, **you must provide the `DISCORD_TOKEN` command line argument when starting the script** and also set the `discord` value in configuration file to be `true`.
 
 You can get Discord token when you create a Discord bot first (see the next chapter).
 
@@ -46,24 +46,29 @@ You can get Discord token when you create a Discord bot first (see the next chap
 2. Invite bot to your Discord server.
 3. `@mention` bot on server chat - after successful mention bot should send you a hello message and he will notify you from this moment.
 
-## Running the script
+## Running script from the command line
+
+```bash
+npm install
+```
 
 ```bash
 npm run start DISCORD_TOKEN=YOURTOKENHERE
 ```
 
-## Running with PM2
-
-[What is PM2?](https://github.com/Unitech/pm2)
+## Running script with Docker
 
 ```bash
-# Install PM2 globally
-npm install pm2 -g
+# Build image
+docker build --build-arg DISCORD_TOKEN="YOURTOKENHERE" -t mpnn .
 ```
 
 ```bash
-pm2 start .\\dist\\mpnn.js -f --node-args="DISCORD_TOKEN=YOURTOKENHERE"
+# Create and run container
+docker run mpnn
 ```
+
+Warning: current version of Dockerfile will store your Discord token in image. Be careful and don't leak your token.
 
 # License
 
