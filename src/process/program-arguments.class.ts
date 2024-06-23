@@ -15,7 +15,7 @@ export class ProgramArguments {
     }
 
     load(): Argument[] {
-        return this.arguments.map((argument) => {
+        return (this.arguments || []).map((argument) => {
             const parts = argument.split('=');
 
             if (parts.length > 1) {

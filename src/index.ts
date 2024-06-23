@@ -20,6 +20,7 @@ import { PlayersListResult } from './api/players-list-result.type';
 import { ConfigLoader } from './file-system/config-loader/config-loader.class';
 import { CurrentDirectory } from './file-system/current-directory/current-directory.class';
 import { FileSystem } from './file-system/file-system/file-system.class';
+import { HealthCheck } from './health-check/health-check.class';
 import { Config } from './models/config.type';
 import { Player } from './models/player.type';
 import { ServerStatus } from './models/server-status.type';
@@ -47,7 +48,7 @@ import { Logger } from './utils/logger.class';
 
     const logger: Logger = new Logger(config?.['log-level'] as LogLevel);
 
-    logger.info('Minecraft Players Number Notifier v0.3.0');
+    logger.info('Minecraft Players Number Notifier v0.4.0');
     logger.info(`Program arguments: ${JSON.stringify(process.argv)}`);
 
     const args = programArguments.load();
@@ -68,12 +69,17 @@ import { Logger } from './utils/logger.class';
         : null;
     const apiClient = new MinecraftServerStatusApiClient(config, logger, fetch);
 
+    const healthCheck = new HealthCheck('/health', 9339, process, logger);
+    healthCheck.listen();
+
     function logNumberOfPlayers(server: string): MonoTypeOperatorFunction<unknown> {
         return tap((result: NumberOfOnlinePlayersResult) => {
-            if (isNumber(result?.online)) {
-                logger.info(`Server ${server} has currently: ${result?.online} players.`);
-            } else {
+            if (!isNumber(result?.online)) {
                 logger.info(`Could not read number of players on server ${server}.`);
+            } else if (result.online === 1) {
+                logger.info(`Server ${server} has currently: ${result?.online} player.`);
+            } else {
+                logger.info(`Server ${server} has currently: ${result?.online} players.`);
             }
         });
     }
