@@ -8,7 +8,7 @@ The purpose of this script is to notify Minecraft server admin about the number 
 
 ## Configuration file
 
-Before running the application fill the values in the `src/config.json` configuration file (this file will be copied into `dist/config.json`` on script start).
+Before running the application fill the values in the `src/config.json` configuration file (this file will be copied into `dist/config.json` on script start).
 
 ### Example `config.json`
 
