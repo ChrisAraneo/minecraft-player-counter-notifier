@@ -5,6 +5,10 @@ export class Process {
         return [...process.argv];
     }
 
+    get env(): { [key: string]: string | undefined } {
+        return process.env;
+    }
+
     uptime(): number {
         return process.uptime();
     }
