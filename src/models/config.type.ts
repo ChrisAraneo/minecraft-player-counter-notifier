@@ -1,8 +1,6 @@
+import { ConfigKey } from './config-key.type';
+
+// TODO Config type -> Config class ?
 export type Config = {
-    'cache-ttl': number;
-    'log-level': string;
-    servers: string[];
-    interval: number;
-    recipients: string[];
-    discord: boolean;
+    [key: ConfigKey | string]: string | number | boolean | string[];
 };
