@@ -25,7 +25,6 @@ import { HealthCheck } from './health-check/health-check.class';
 import { Config } from './models/config.type';
 import { Player } from './models/player.type';
 import { ServerStatus } from './models/server-status.type';
-import { DISCORD_TOKEN, RECIPIENTS } from './process/argument-keys.consts';
 import { EnvironmentVariables } from './process/environment-variables.class';
 import { Process } from './process/process.class';
 import { Store } from './store/store.class';
@@ -46,7 +45,7 @@ import { Logger } from './utils/logger.class';
 
     const environmentVariables = new EnvironmentVariables(process).get();
     Object.entries(environmentVariables).forEach(([key, value]) => {
-        config[dashify(key)] = value;
+        config[dashify(key).split('_').join('-')] = value;
     });
 
     if (Object.keys(config).length === 0) {
@@ -54,13 +53,13 @@ import { Logger } from './utils/logger.class';
         return;
     }
 
-    const logger: Logger = new Logger(config?.['log-level'] as LogLevel);
+    const logger: Logger = new Logger(config['log-level'] as LogLevel);
 
     logger.info('Minecraft Players Number Notifier v0.4.0');
     logger.debug(`Loaded configuration: ${JSON.stringify(config)}`);
 
-    const token: string | null = (config[DISCORD_TOKEN] || null) as string | null;
-    const predefinedRecipients = (config[RECIPIENTS] || []) as string | string[];
+    const token: string | null = (config['discord-token'] || null) as string | null;
+    const predefinedRecipients = (config['recipients'] || []) as string | string[];
     const discordApiClient: DiscordApiClient | null = config.discord
         ? new DiscordApiClient(
               config,
