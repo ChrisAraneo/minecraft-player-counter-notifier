@@ -19,7 +19,7 @@ export class MinecraftServerStatusApiClient {
         private logger: Logger,
         private fetch: (url: URL | RequestInfo, init?: RequestInit) => Promise<Response>,
     ) {
-        this.CacheTTL = this.config['cache-ttl'];
+        this.CacheTTL = Number(this.config['cache-ttl']);
     }
 
     static clearCache(): void {
