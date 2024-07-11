@@ -4,5 +4,5 @@
     "interval": 60000,
     "log-level": "debug",
     "recipients": [],
-    "servers": ["wulfixowo.maxcraft.pl"]
+    "servers": ["116.202.227.39", "195.201.199.186"]
 }

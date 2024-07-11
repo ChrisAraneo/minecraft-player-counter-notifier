@@ -25,6 +25,7 @@ export class HealthCheck {
 
             try {
                 response.send(healthcheck);
+                this.logger.debug(`Health OK`);
             } catch (error) {
                 healthcheck.message = error;
                 response.status(503).send();

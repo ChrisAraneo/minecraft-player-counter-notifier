@@ -1,3 +1,4 @@
+import dashify from 'dashify';
 import { get, isNumber } from 'lodash';
 import fetch from 'node-fetch';
 import {
@@ -24,39 +25,41 @@ import { HealthCheck } from './health-check/health-check.class';
 import { Config } from './models/config.type';
 import { Player } from './models/player.type';
 import { ServerStatus } from './models/server-status.type';
-import { DISCORD_TOKEN, RECIPIENTS } from './process/argument-keys.consts';
+import { EnvironmentVariables } from './process/environment-variables.class';
 import { Process } from './process/process.class';
-import { ProgramArguments } from './process/program-arguments.class';
 import { Store } from './store/store.class';
 import { LogLevel } from './utils/log-level.type';
 import { Logger } from './utils/logger.class';
 
 (async (): Promise<void> => {
     const process = new Process();
-    const programArguments = new ProgramArguments(process);
     const currentDirectory = new CurrentDirectory();
     const fileSystem = new FileSystem();
-    const configLoader = new ConfigLoader(currentDirectory, fileSystem);
-    const config: Config | void = await firstValueFrom(configLoader.readConfigFile()).catch(
-        (error) => logger.error(error),
-    );
     const store = new Store();
 
-    if (!config) {
+    const configLoader = new ConfigLoader(currentDirectory, fileSystem);
+    const config: Config | void =
+        (await firstValueFrom(configLoader.readConfigFile()).catch((error) =>
+            logger.error(error),
+        )) || {};
+
+    const environmentVariables = new EnvironmentVariables(process).get();
+    Object.entries(environmentVariables).forEach(([key, value]) => {
+        config[dashify(key).split('_').join('-')] = value;
+    });
+
+    if (Object.keys(config).length === 0) {
+        console.error('No config');
         return;
     }
 
-    const logger: Logger = new Logger(config?.['log-level'] as LogLevel);
+    const logger: Logger = new Logger(config['log-level'] as LogLevel);
 
-    logger.info('Minecraft Players Number Notifier v0.4.0');
-    logger.info(`Program arguments: ${JSON.stringify(process.argv)}`);
+    logger.info('Minecraft Players Number Notifier v0.5.0');
+    logger.debug(`Loaded configuration: ${JSON.stringify(config)}`);
 
-    const args = programArguments.load();
-    const token: string | null = (args.find((item) => item.key === DISCORD_TOKEN)?.value ||
-        null) as string | null;
-    const predefinedRecipients = (args.find((item) => item.key === RECIPIENTS)?.value || []) as
-        | string
-        | string[];
+    const token: string | null = (config['discord-token'] || null) as string | null;
+    const predefinedRecipients = (config['recipients'] || []) as string | string[];
     const discordApiClient: DiscordApiClient | null = config.discord
         ? new DiscordApiClient(
               config,
@@ -119,7 +122,7 @@ import { Logger } from './utils/logger.class';
         }
     }
 
-    interval(config.interval)
+    interval(Number(config.interval))
         .pipe(
             mergeMap(() => {
                 return from((config.servers as string[]) || []);
