@@ -55,7 +55,7 @@ import { Logger } from './utils/logger.class';
 
     const logger: Logger = new Logger(config['log-level'] as LogLevel);
 
-    logger.info('Minecraft Players Number Notifier v0.4.0');
+    logger.info('Minecraft Players Number Notifier v0.5.0');
     logger.debug(`Loaded configuration: ${JSON.stringify(config)}`);
 
     const token: string | null = (config['discord-token'] || null) as string | null;
