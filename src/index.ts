@@ -19,7 +19,6 @@ import { MinecraftServerStatusApiClient } from './api/minecraft-server-status-ap
 import { NumberOfOnlinePlayersResult } from './api/number-of-online-players-result.type';
 import { PlayersListResult } from './api/players-list-result.type';
 import { ConfigLoader } from './file-system/config-loader/config-loader.class';
-import { FileSystem } from './file-system/file-system/file-system.class';
 import { HealthCheck } from './health-check/health-check.class';
 import { Config } from './models/config.type';
 import { Player } from './models/player.type';
@@ -29,7 +28,7 @@ import { Process } from './process/process.class';
 import { Store } from './store/store.class';
 import { LogLevel } from './utils/log-level.type';
 import { Logger } from './utils/logger.class';
-import { CurrentDirectory } from '@chris.araneo/file-system';
+import { CurrentDirectory, FileSystem } from '@chris.araneo/file-system';
 
 (async (): Promise<void> => {
     const process = new Process();

@@ -1,5 +1,5 @@
 import { MakeDirectoryOptions, PathLike } from 'fs';
-import { FileSystem } from './file-system.class';
+import { FileSystem } from '@chris.araneo/file-system';
 
 export class FileSystemMock extends FileSystem {
     readdir(

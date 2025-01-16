@@ -1,9 +1,8 @@
 import { firstValueFrom } from 'rxjs';
-import { FileSystem } from '../file-system/file-system.class';
 import { FileSystemMock } from '../file-system/file-system.mock.class';
 import { ConfigLoader } from './config-loader.class';
 import { CONFIG_READING_ERROR_MESSAGE, INVALID_CONFIG_ERROR_MESSAGE } from './config-loader.consts';
-import { CurrentDirectory, CurrentDirectoryMock } from '@chris.araneo/file-system';
+import { CurrentDirectory, CurrentDirectoryMock, FileSystem } from '@chris.araneo/file-system';
 
 describe('ConfigLoader', () => {
     let fileSystem: FileSystem;
