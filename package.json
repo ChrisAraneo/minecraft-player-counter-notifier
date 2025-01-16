@@ -45,6 +45,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@chris.araneo/file-system": "^0.0.31",
     "dashify": "^2.0.0",
     "discord.js": "^14.14.1",
     "express": "^4.19.2",
