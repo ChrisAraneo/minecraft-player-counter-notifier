@@ -1,7 +1,7 @@
 import express from 'express';
 import * as core from 'express-serve-static-core';
 import { Process } from '../process/process.class';
-import { Logger } from '../utils/logger.class';
+import { Logger } from '@chris.araneo/logger';
 
 export class HealthCheck {
     private server: core.Express;

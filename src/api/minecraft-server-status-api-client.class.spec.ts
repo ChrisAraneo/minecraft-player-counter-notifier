@@ -1,9 +1,9 @@
 import { RequestInfo, RequestInit, Response } from 'node-fetch';
 import { Config } from '../models/config.type';
-import { Logger } from '../utils/logger.class';
 import { MinecraftServerStatusApiClient } from './minecraft-server-status-api-client.class';
 import { StatusResponse } from './status-response.type';
 import { firstValueFrom } from 'rxjs';
+import { Logger } from '@chris.araneo/logger';
 
 describe('MinecraftServerStatusApiClient', () => {
     let apiClient: MinecraftServerStatusApiClient;

@@ -2,8 +2,8 @@ import { Client, Events, Partials, User } from 'discord.js';
 import { BehaviorSubject, Subscription, debounceTime } from 'rxjs';
 import { Config } from '../models/config.type';
 import { Player } from '../models/player.type';
-import { Logger } from '../utils/logger.class';
 import { DiscordApiMessage } from './discord-api-message.class';
+import { Logger } from '@chris.araneo/logger';
 
 export class DiscordApiClient {
     private client: Client;

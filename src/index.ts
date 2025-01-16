@@ -26,9 +26,8 @@ import { ServerStatus } from './models/server-status.type';
 import { EnvironmentVariables } from './process/environment-variables.class';
 import { Process } from './process/process.class';
 import { Store } from './store/store.class';
-import { LogLevel } from './utils/log-level.type';
-import { Logger } from './utils/logger.class';
 import { CurrentDirectory, FileSystem } from '@chris.araneo/file-system';
+import { Logger, LogLevel } from '@chris.araneo/logger';
 
 (async (): Promise<void> => {
     const process = new Process();

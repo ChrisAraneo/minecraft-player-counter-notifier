@@ -2,11 +2,11 @@ import { get, isArray, isNumber } from 'lodash';
 import { RequestInfo, RequestInit, Response } from 'node-fetch';
 import { Observable, from, map, of } from 'rxjs';
 import { Config } from '../models/config.type';
-import { Logger } from '../utils/logger.class';
 import { Cache } from './cache.type';
 import { NumberOfOnlinePlayersResult } from './number-of-online-players-result.type';
 import { PlayersListResult } from './players-list-result.type';
 import { StatusResponse } from './status-response.type';
+import { Logger } from '@chris.araneo/logger';
 
 export class MinecraftServerStatusApiClient {
     private static StatusEndpoint = `https://api.mcsrvstat.us/3`;

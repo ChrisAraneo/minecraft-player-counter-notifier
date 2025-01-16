@@ -1,9 +1,8 @@
 import Path from 'path';
 import { Observable, catchError, map } from 'rxjs';
 import { Config } from '../../models/config.type';
-import { JsonFile } from '../../models/json-file.class';
 import { CONFIG_READING_ERROR_MESSAGE, INVALID_CONFIG_ERROR_MESSAGE } from './config-loader.consts';
-import { CurrentDirectory, JsonFileReader, FileSystem } from '@chris.araneo/file-system';
+import { CurrentDirectory, JsonFileReader, FileSystem, JsonFile } from '@chris.araneo/file-system';
 
 export class ConfigLoader {
     private jsonFileReader: JsonFileReader;
