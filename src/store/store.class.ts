@@ -63,7 +63,7 @@ export class Store {
       currentPlayers.sort(this.compareByUUID);
       previousPlayers.sort(this.compareByUUID);
 
-      return isEqual(currentPlayers, previousPlayers);
+      return !isEqual(currentPlayers, previousPlayers);
     }
 
     return true;
