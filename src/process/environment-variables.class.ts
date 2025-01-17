@@ -1,23 +1,25 @@
+import { isString } from 'lodash';
+
 import { Process } from './process.class';
 
 export class EnvironmentVariables {
-    constructor(private readonly process: Process) {}
+  constructor(private readonly process: Process) {}
 
-    get(): { [key: string]: string | string[] | undefined } {
-        const env = this.process.env;
-        const keys = Object.keys(env || {});
-        const result = {};
+  get(): Record<string, string | string[] | undefined> {
+    const env = this.process.env;
+    const keys = Object.keys(env || {});
+    const result: Record<string, string | string[] | undefined> = {};
 
-        keys.forEach((key) => {
-            let value: string | string[] = env[key];
+    keys.forEach((key) => {
+      let value: string | string[] | undefined = env[key];
 
-            if (value.indexOf(';') >= 0) {
-                value = value.split(';');
-            }
+      if (isString(value) && value.indexOf(';') >= 0) {
+        value = value.split(';');
+      }
 
-            result[key] = value;
-        });
+      result[key] = value;
+    });
 
-        return result;
-    }
+    return result;
+  }
 }

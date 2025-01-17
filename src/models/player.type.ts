@@ -1,4 +1,4 @@
-export type Player = {
-    name: string;
-    uuid: string;
-};
+export interface Player {
+  name: string;
+  uuid: string;
+}
