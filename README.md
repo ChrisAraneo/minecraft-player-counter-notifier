@@ -1,10 +1,13 @@
-# ⛏️ Minecraft Players Number Notifier (v0.5.2)
+<h1 align="center">⛏️ Minecraft Players Number Notifier (v0.5.2)</h1>
 
-![Minecraft Players Number Notifier logo](logo.png?raw=true)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ChrisAraneo/minecraft-players-number-notifier/refs/heads/master/logo.png" alt="Minecraft Players Number Notifier logo" width="506px" height="144px"/>
+  <br>
+  <em>Get notified on Discord when someone joins your Minecraft server</em>
+  <br>
+</p>
 
-Get notified on Discord when someone joins your Minecraft server.
-
-## ❓ What is it?
+## ❓ Motivation
 
 The purpose of this script is to notify server admin about the number of players on the server. Current version supports sending direct messages via Discord. The script was created as a solution to the author's personal needs.
 
