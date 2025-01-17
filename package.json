@@ -1,6 +1,6 @@
 {
   "name": "minecraft-players-number-notifier",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Script that checks number of players on Minecraft server and notifies the admin",
   "keywords": [
     "minecraft"
