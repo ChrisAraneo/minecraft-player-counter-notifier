@@ -1,16 +1,18 @@
-# Minecraft Players Number Notifier (v0.5.2)
+# ⛏️ Minecraft Players Number Notifier (v0.5.2)
 
 ![Minecraft Players Number Notifier logo](logo.png?raw=true)
 
-## What is it?
+Get notified on Discord when someone joins your Minecraft server.
+
+## ❓ What is it?
 
 The purpose of this script is to notify server admin about the number of players on the server. Current version supports sending direct messages via Discord. The script was created as a solution to the author's personal needs.
 
-## Configuration file
+## ⚙️ Configuration file
 
-Before running the application fill the values in the `src/config.json` configuration file (this file will be copied into `dist/config.json` on script start).
+Before running the application fill the values in the `src/config.json` configuration file (this file will be copied into `dist/src/config.json` on script start).
 
-### Example `config.json`
+### 👉 Example `config.json`
 
 ```json
 {
@@ -23,7 +25,7 @@ Before running the application fill the values in the `src/config.json` configur
 }
 ```
 
-### Configuration parameters explained
+### 💬 Explanation
 
 - **`servers` - list of servers you want to track**
 - **`interval` - time between next updates of the number of players (in milliseconds); sixty seconds is usually low enough**
@@ -34,19 +36,19 @@ Before running the application fill the values in the `src/config.json` configur
 
 Note: the most important parameters are bold
 
-## Discord token
+## 🔑 Discord token
 
 If you want notifications to be sent via Discord, **you must provide the `DISCORD_TOKEN` environment variable** and also set the `discord` value in configuration file to be `true`.
 
 You can get Discord token when you create a Discord bot first (see the next chapter).
 
-## How to use Discord bot?
+## 🤖 How to use Discord bot?
 
 1. Create a bot instance on [https://discord.com/developers/applications].
 2. Invite bot to your Discord server.
 3. `@mention` bot on server chat - after successful mention bot should send you a hello message and he will notify you from this moment.
 
-## Running script from the command line
+## 🖥️ Running script from the command line
 
 ```bash
 npm install
@@ -57,7 +59,7 @@ npm install
 DISCORD_TOKEN=YOURTOKENHERE npm run start
 ```
 
-## Running script with Docker
+## 🐋 Running script with Docker
 
 ```bash
 # Build image
@@ -71,7 +73,7 @@ docker run mpnn
 
 Warning: current version of Dockerfile will store your Discord token in image. Be careful and don't leak your token.
 
-# License
+# 🐋 License
 
 Project is [MIT licensed](LICENSE).
 Project logo is [CC0 1.0 Deed licensed](https://creativecommons.org/publicdomain/zero/1.0/deed.en). Logo contains [modified image made by JohannPoufPouf](https://openverse.org/image/93f54523-5ce1-469a-9cf6-531f0ca8b6ea).
