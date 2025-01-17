@@ -24,16 +24,19 @@ export class ConfigLoader {
   }
 
   readConfigFile(): Observable<Config> {
-    // const currentDirectory = this.currentDirectory.getCurrentDirectory(); // TODO Fix
-    const path = Path.normalize(`${__filename}/../../../config.json`);
+    const currentDirectory = this.currentDirectory.getCurrentDirectory();
+    const path = Path.normalize(
+      `${currentDirectory}/../../../../../../dist/src/config.json`,
+    );
 
     return this.jsonFileReader.readFile(path).pipe(
+      map((result: unknown) => {
+        return (result as JsonFile)?.getContent();
+      }),
       catchError(() => {
         throw Error(CONFIG_READING_ERROR_MESSAGE);
       }),
-      map((result: unknown) => {
-        const content: unknown = (result as JsonFile)?.getContent();
-
+      map((content: unknown) => {
         if (this.isConfig(content)) {
           return content;
         } else {
