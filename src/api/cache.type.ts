@@ -1,6 +1,6 @@
 import { StatusResponse } from './status-response.type';
 
-export type Cache = {
-    timestamp: Date;
-    response: StatusResponse;
-};
+export interface Cache {
+  timestamp: Date;
+  response: StatusResponse;
+}

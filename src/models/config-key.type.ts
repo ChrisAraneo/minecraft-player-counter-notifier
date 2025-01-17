@@ -1,7 +1,7 @@
 export type ConfigKey =
-    | 'cache-ttl'
-    | 'log-level'
-    | 'servers'
-    | 'interval'
-    | 'recipients'
-    | 'discord';
+  | 'cache-ttl'
+  | 'log-level'
+  | 'servers'
+  | 'interval'
+  | 'recipients'
+  | 'discord';

@@ -1,4 +1,4 @@
-export type SendMessageResult = {
-    success: boolean;
-    error?: unknown;
-};
+export interface SendMessageResult {
+  success: boolean;
+  error?: unknown;
+}

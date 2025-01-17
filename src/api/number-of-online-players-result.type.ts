@@ -1,4 +1,4 @@
-export type NumberOfOnlinePlayersResult = {
-    success: boolean;
-    online?: number;
-};
+export interface NumberOfOnlinePlayersResult {
+  success: boolean;
+  online?: number;
+}

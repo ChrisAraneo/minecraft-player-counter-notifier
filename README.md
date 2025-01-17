@@ -1,4 +1,4 @@
-# Minecraft Players Number Notifier (v0.5.0)
+# Minecraft Players Number Notifier (v0.5.1)
 
 ![Minecraft Players Number Notifier logo](logo.png?raw=true)
 
@@ -14,12 +14,12 @@ Before running the application fill the values in the `src/config.json` configur
 
 ```json
 {
-    "servers": ["abc.com", "minikraft.example"],
-    "interval": 60000,
-    "discord": true,
-    "log-level": "debug",
-    "cache-ttl": 30000,
-    "recipients": [],
+  "servers": ["abc.com", "minikraft.example"],
+  "interval": 60000,
+  "discord": true,
+  "log-level": "debug",
+  "cache-ttl": 30000,
+  "recipients": [],
 }
 ```
 
