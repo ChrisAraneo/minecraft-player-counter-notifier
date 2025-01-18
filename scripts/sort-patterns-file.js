@@ -36,12 +36,6 @@ async function sortPatternsFile(path) {
   );
 }
 
-process.argv.forEach(function (value, index) {
-  if (index >= 2) {
-    sortPatternsFile(normalize(value));
-  }
-});
-
 module.exports = {
   sortPatternsFile: sortPatternsFile,
 };
