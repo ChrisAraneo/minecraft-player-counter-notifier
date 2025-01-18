@@ -28,6 +28,7 @@ import { ServerStatus } from './models/server-status.type';
 import { EnvironmentVariables } from './process/environment-variables.class';
 import { Process } from './process/process.class';
 import { Store } from './store/store.class';
+
 (async (): Promise<void> => {
   const process = new Process();
   const currentDirectory = new CurrentDirectory();
@@ -41,6 +42,11 @@ import { Store } from './store/store.class';
     )) || {};
 
   const environmentVariables = new EnvironmentVariables(process).get();
+
+  if (environmentVariables['CI']) {
+    return;
+  }
+
   Object.entries(environmentVariables).forEach(([key, value]) => {
     if (!isUndefined(value)) {
       config[dashify(key).split('_').join('-')] = value;
@@ -48,13 +54,13 @@ import { Store } from './store/store.class';
   });
 
   if (Object.keys(config).length === 0) {
-    console.error('No config');
+    new Logger('error').error('No config');
     return;
   }
 
   const logger: Logger = new Logger(config['log-level'] as LogLevel);
 
-  logger.info('Minecraft Players Number Notifier v0.5.2');
+  logger.info('Minecraft Players Number Notifier v0.5.3');
   logger.debug(`Loaded configuration: ${JSON.stringify(config)}`);
 
   const token: string | null = (config['discord-token'] || null) as

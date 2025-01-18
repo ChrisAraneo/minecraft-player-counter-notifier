@@ -1,9 +1,13 @@
 {
   "name": "minecraft-players-number-notifier",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Script that checks number of players on Minecraft server and notifies the admin",
   "keywords": [
-    "minecraft"
+    "minecraft",
+    "notifications",
+    "discord-js",
+    "discord",
+    "discord-api"
   ],
   "homepage": "https://github.com/ChrisAraneo/minecraft-players-number-notifier#readme",
   "bugs": {
@@ -17,12 +21,11 @@
   "author": "Krzysztof Pająk (Chris Araneo)",
   "main": "index.js",
   "scripts": {
-    "build": "tsc --build tsconfig.json",
+    "build": "tsc --build tsconfig.json && node scripts/copy-config",
     "chores": "npm run lint && npm run format",
-    "copy-config": "node scripts/copy-config-file",
     "format": "node scripts/format",
     "lint": "node scripts/lint",
-    "start": "npm run build && npm run copy-config && node dist/src/index.js",
+    "start": "npm run build && node dist/src/index.js",
     "test": "jest",
     "typecheck": "tsc"
   },

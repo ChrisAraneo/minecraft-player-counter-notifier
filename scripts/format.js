@@ -3,18 +3,18 @@
 
 const { normalize } = require('node:path');
 const { exec } = require('node:child_process');
-const { readVersion } = require('./read-version');
 const { sortPatternsFile } = require('./sort-patterns-file');
 const { print } = require('./print');
+const packageJson = require('./../package.json');
+const config = require('./../scripts.config.json');
 
-const JSON_FILES = ['tsconfig.json', 'package.json', 'src/config.json', '.prettierrc.json'];
-
-const SOURCE_FILES = ['*.{ts,js,mjs,cjs}', 'src/**/*.ts'];
-
-async function format(prettierVersion, sortPackageJsonVersion) {
+async function format() {
+  const prettierVersion = packageJson.devDependencies.prettier;
+  const sortPackageJsonVersion =
+    packageJson.devDependencies['sort-package-json'];
   const directory = normalize(`${__filename}/../../`);
 
-  const patterns = `${[...JSON_FILES, ...SOURCE_FILES]
+  const patterns = `${[...config.format.jsons, ...config.format.sources]
     .map((pattern) => `"${normalize(directory + '/' + pattern)}"`)
     .join(' ')}`.trimEnd();
 
@@ -24,19 +24,9 @@ async function format(prettierVersion, sortPackageJsonVersion) {
 
   exec(command, (error, stdout, stderr) => print(error, stdout, stderr));
 
-  sortPatternsFile(normalize(`${directory}/.prettierignore`));
-  sortPatternsFile(normalize(`${directory}/.gitignore`));
+  config.format.patterns.forEach((pattern) =>
+    sortPatternsFile(normalize(`${directory}/${pattern}`)),
+  );
 }
 
-async function main() {
-  const prettierVersion = await readVersion('prettier');
-  const sortPackageJsonVersion = await readVersion('sort-package-json');
-
-  format(prettierVersion, sortPackageJsonVersion);
-}
-
-main();
-
-module.exports = {
-  formatPackage: format,
-};
+format();
