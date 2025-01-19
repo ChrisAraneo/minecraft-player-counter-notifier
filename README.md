@@ -4,7 +4,7 @@
   <img src="https://raw.githubusercontent.com/ChrisAraneo/minecraft-players-number-notifier/refs/heads/master/logo.png" alt="Minecraft Players Number Notifier logo" width="506px" height="144px"/>
   <br>
   <a href="https://github.com/ChrisAraneo/minecraft-players-number-notifier/blob/master/package.json"><img src="https://img.shields.io/badge/version-v0.5.3-blue" alt="version"></a>
-  <a href="https://github.com/ChrisAraneo/minecraft-players-number-notifier/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Minecraft Players Number Notifier is released under the MIT license."></a>
+  <a href="https://github.com/ChrisAraneo/minecraft-players-number-notifier/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Minecraft Players Number Notifier is released under the MIT license."></a>
   <a href="https://github.com/ChrisAraneo/minecraft-players-number-notifier/actions/workflows/node.js.yml"><img alt="GitHub CI Status" src="https://img.shields.io/github/actions/workflow/status/ChrisAraneo/minecraft-players-number-notifier/node.js.yml?label=CI&logo=GitHub"></a>
   <br>
   <br>
