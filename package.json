@@ -30,7 +30,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@chris.araneo/file-system": "^0.0.31",
+    "@chris.araneo/file-system": "^0.0.32",
     "@chris.araneo/logger": "^0.0.2",
     "dashify": "^2.0.0",
     "discord.js": "^14.14.1",

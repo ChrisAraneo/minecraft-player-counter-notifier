@@ -25,9 +25,7 @@ export class ConfigLoader {
 
   readConfigFile(): Observable<Config> {
     const currentDirectory = this.currentDirectory.getCurrentDirectory();
-    const path = Path.normalize(
-      `${currentDirectory}/../../../../../../dist/src/config.json`,
-    );
+    const path = Path.normalize(`${currentDirectory}/dist/src/config.json`);
 
     return this.jsonFileReader.readFile(path).pipe(
       map((result: unknown) => {
