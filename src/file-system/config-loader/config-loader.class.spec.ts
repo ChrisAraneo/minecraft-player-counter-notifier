@@ -5,7 +5,10 @@ import {
 } from '@chris.araneo/file-system';
 import { firstValueFrom } from 'rxjs';
 
+import { EmptyConfigFileSystemMock } from '../file-system/empty-config-file-system.mock.class';
 import { FileSystemMock } from '../file-system/file-system.mock.class';
+import { InvalidConfigFileSystemMock } from '../file-system/invalid-config-file-system.mock.class';
+import { InvalidJsonFileSystemMock } from '../file-system/invalid-json-file-system.mock.class';
 import { ConfigLoader } from './config-loader.class';
 import {
   CONFIG_READING_ERROR_MESSAGE,
@@ -72,36 +75,3 @@ describe('ConfigLoader', () => {
     });
   });
 });
-
-class InvalidConfigFileSystemMock extends FileSystemMock {
-  override readFile(
-    _path: string,
-    _options: unknown,
-    callback: (err: NodeJS.ErrnoException | null, data: string) => void,
-  ): void {
-    callback(
-      null,
-      `{"interval": null, "recipients": false,"servers": ["1.1.1.1"]}`,
-    );
-  }
-}
-
-class InvalidJsonFileSystemMock extends FileSystemMock {
-  override readFile(
-    _path: string,
-    _options: unknown,
-    callback: (err: NodeJS.ErrnoException | null, data: string) => void,
-  ): void {
-    callback(null, `Hello World!`);
-  }
-}
-
-class EmptyConfigFileSystemMock extends FileSystemMock {
-  override readFile(
-    _path: string,
-    _options: unknown,
-    callback: (err: NodeJS.ErrnoException | null, data: string) => void,
-  ): void {
-    callback(null, undefined as unknown as string);
-  }
-}
