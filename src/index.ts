@@ -1,4 +1,5 @@
 import { CurrentDirectory, FileSystem } from '@chris.araneo/file-system';
+import { HealthCheckService } from '@chris.araneo/health-check';
 import { Logger, LogLevel } from '@chris.araneo/logger';
 import dashify from 'dashify';
 import { get, isNull, isNumber, isUndefined } from 'lodash';
@@ -21,7 +22,6 @@ import { MinecraftServerStatusApiClient } from './api/minecraft-server-status-ap
 import { NumberOfOnlinePlayersResult } from './api/number-of-online-players-result.type';
 import { PlayersListResult } from './api/players-list-result.type';
 import { ConfigLoader } from './file-system/config-loader/config-loader.class';
-import { HealthCheck } from './health-check/health-check.class';
 import { Config } from './models/config.type';
 import { Player } from './models/player.type';
 import { ServerStatus } from './models/server-status.type';
@@ -87,8 +87,13 @@ import { Store } from './store/store.class';
       : null;
   const apiClient = new MinecraftServerStatusApiClient(config, logger, fetch);
 
-  const healthCheck = new HealthCheck('/health', 9339, process, logger);
-  healthCheck.listen();
+  if (environmentVariables['MPNN_HEALTH_CHECK_PORT']) {
+    new HealthCheckService(
+      '/health',
+      Number(environmentVariables['MPNN_HEALTH_CHECK_PORT']),
+      logger,
+    ).listen();
+  }
 
   function logNumberOfPlayers(server: string) {
     return tap((result: NumberOfOnlinePlayersResult) => {
