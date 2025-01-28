@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@chris.araneo/file-system": "^0.0.32",
-    "@chris.araneo/health-check": "^0.0.1",
+    "@chris.araneo/health-check": "^0.0.2",
     "@chris.araneo/logger": "^0.0.2",
     "dashify": "^2.0.0",
     "discord.js": "^14.14.1",
